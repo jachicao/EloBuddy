@@ -4,6 +4,8 @@ using System.Drawing;
 using System.Linq;
 using EloBuddy;
 using EloBuddy.SDK;
+using EloBuddy.SDK.Constants;
+using EloBuddy.SDK.Enumerations;	
 using EloBuddy.SDK.Events;
 using EloBuddy.SDK.Menu.Values;
 using EloBuddy.SDK.Rendering;
@@ -29,6 +31,7 @@ namespace Jhin.Champions
         public Dictionary<int, Text> TextsInHeroPosition = new Dictionary<int, Text>();
         public Dictionary<int, Text> LastPredictedPositionText = new Dictionary<int, Text>();
         public Dictionary<int, Tuple<Vector3, bool>> LastPredictedPosition = new Dictionary<int, Tuple<Vector3, bool>>();
+		
 
         public bool IsR1
         {
@@ -43,7 +46,7 @@ namespace Jhin.Champions
                 TextsInHeroPosition.Add(enemy.NetworkId, new Text("R killable", new Font("Arial", 23F, FontStyle.Bold)) { Color = Color.Red });
                 LastPredictedPositionText.Add(enemy.NetworkId, new Text(enemy.ChampionName + " last predicted position", new Font("Arial", 23F, FontStyle.Bold)) { Color = Color.Red });
             }
-            Q = new SpellBase(SpellSlot.Q, SpellType.Targeted, 550)
+            Q = new SpellBase(SpellSlot.Q, SpellType.Targeted, 600)
             {
                 Width = 450,
                 Speed = 1800,
@@ -53,18 +56,19 @@ namespace Jhin.Champions
             {
                 Width = 40,
                 CastDelay = 750,
-                AllowedCollisionCount = -1,
+                Speed = 5000,
+				AllowedCollisionCount = -1,
             };
             E = new SpellBase(SpellSlot.E, SpellType.Circular, 750)
             {
                 Width = 135,
                 CastDelay = 250,
-                Speed = 1600,
+				Speed = 1600,
             };
             R = new SpellBase(SpellSlot.R, SpellType.Linear, 3500)
             {
-                Width = 80,
-                CastDelay = 200,
+                Width = 65,
+                CastDelay = 250,
                 Speed = 5000,
                 AllowedCollisionCount = -1,
             };
@@ -148,14 +152,14 @@ namespace Jhin.Champions
             MenuManager.AddSubMenu("Combo");
             {
                 ComboMenu.AddValue("Q", new CheckBox("Use Q"));
-                ComboMenu.AddValue("W", new CheckBox("Use W"));
-                ComboMenu.AddValue("E", new CheckBox("Use E"));
+                ComboMenu.AddValue("W", new CheckBox("Use W", false));
+                ComboMenu.AddValue("E", new CheckBox("Use E", false));
                 ComboMenu.AddValue("Items", new CheckBox("Use offensive items"));
             }
             MenuManager.AddSubMenu("Ultimate");
             {
                 UltimateMenu.AddStringList("Mode", "R AIM Mode", new[] { "Disabled", "Using TapKey", "Automatic" }, 2);
-                UltimateMenu.AddValue("OnlyKillable", new CheckBox("Only attack if it's killable"));
+                UltimateMenu.AddValue("OnlyKillable", new CheckBox("Only attack if it's killable", false));
                 UltimateMenu.AddValue("Delay", new Slider("Delay between R's (in ms)", 0, 0, 1500));
                 UltimateMenu.AddValue("NearMouse", new GroupLabel("Near Mouse Settings"));
                 UltimateMenu.AddValue("NearMouse.Enabled", new CheckBox("Only select target near mouse", false));
@@ -188,7 +192,7 @@ namespace Jhin.Champions
                 {
                     ClearMenu.AddValue("JungleClear.Q", new CheckBox("Use Q"));
                     ClearMenu.AddValue("JungleClear.W", new CheckBox("Use W"));
-                    ClearMenu.AddValue("JungleClear.E", new CheckBox("Use W"));
+                    ClearMenu.AddValue("JungleClear.E", new CheckBox("Use E"));
                     ClearMenu.AddValue("JungleClear.ManaPercent", new Slider("Minimum Mana Percent", 20));
                 }
             }
@@ -196,8 +200,9 @@ namespace Jhin.Champions
             MenuManager.AddKillStealMenu();
             {
                 KillStealMenu.AddValue("Q", new CheckBox("Use Q"));
+                KillStealMenu.AddValue("Qmin", new CheckBox("Use Q On Minions"));
                 KillStealMenu.AddValue("W", new CheckBox("Use W"));
-                KillStealMenu.AddValue("E", new CheckBox("Use E"));
+                KillStealMenu.AddValue("E", new CheckBox("Use E", false));
                 KillStealMenu.AddValue("R", new CheckBox("Use R"));
             }
 
@@ -216,12 +221,12 @@ namespace Jhin.Champions
             Evader.AddDangerousSpells();
             MenuManager.AddDrawingsMenu();
             {
-                Q.AddDrawings();
+                Q.AddDrawings(false);
                 W.AddDrawings();
                 E.AddDrawings(false);
                 R.AddDrawings();
                 DrawingsMenu.Add("R.Killable", new CheckBox("Draw text if target is r killable"));
-                DrawingsMenu.Add("R.LastPredictedPosition", new CheckBox("Draw last predicted position"));
+				DrawingsMenu.Add("R.LastPredictedPosition", new CheckBox("Draw last predicted position"));
             }
         }
 
@@ -233,7 +238,7 @@ namespace Jhin.Champions
                 foreach (var enemy in R.EnemyHeroes.Where(h => R.IsKillable(h) && TextsInScreen.ContainsKey(h.NetworkId)))
                 {
                     TextsInScreen[enemy.NetworkId].Position = new Vector2(100, 50 * count);
-                    TextsInScreen[enemy.NetworkId].Draw();
+                    TextsInScreen[enemy.NetworkId].Draw();				
                     if (enemy.VisibleOnScreen)
                     {
                         TextsInHeroPosition[enemy.NetworkId].Position = enemy.Position.WorldToScreen();
@@ -251,8 +256,8 @@ namespace Jhin.Champions
             {
                 EloBuddy.SDK.Rendering.Circle.Draw(SharpDX.Color.Blue, UltimateMenu.Slider("NearMouse.Radius"), 1, MousePos);
             }
-            if (DrawingsMenu.CheckBox("R.LastPredictedPosition") && (R.IsReady || IsCastingR))
-            {
+			if (DrawingsMenu.CheckBox("R.LastPredictedPosition") && (R.IsReady || IsCastingR))
+				{
                 foreach (var enemy in EntityManager.Heroes.Enemies.Where(h => !h.IsValidTarget() && !h.IsDead && LastPredictedPosition.ContainsKey(h.NetworkId)))
                 {
                     var tuple = LastPredictedPosition[enemy.NetworkId];
@@ -296,14 +301,14 @@ namespace Jhin.Champions
                 }
                 return;
             }
-            if (AutomaticMenu.CheckBox("Buffed"))
+            if (AutomaticMenu.CheckBox("Buffed") && !IsCastingR)
             {
                 foreach (var enemy in UnitManager.ValidEnemyHeroes.Where(TargetHaveEBuff))
                 {
                     CastW(enemy);
                 }
             }
-            if (AutomaticMenu.CheckBox("Immobile"))
+            if (AutomaticMenu.CheckBox("Immobile") && !IsCastingR)
             {
                 foreach (var enemy in E.EnemyHeroes)
                 {
@@ -321,20 +326,28 @@ namespace Jhin.Champions
         {
             foreach (var enemy in UnitManager.ValidEnemyHeroes.Where(h => h.HealthPercent <= 40f))
             {
+                var Minion = EntityManager.Heroes.Enemies.Where(it => it.IsValidTarget(Q.Range)).FirstOrDefault(it => EntityManager.MinionsAndMonsters.EnemyMinions.Any(minion => minion.Distance(it) <= 450));
                 var result = GetBestCombo(enemy);
-                if (KillStealMenu.CheckBox("Q") && (result.Q || Q.IsKillable(enemy)))
+				var targetQ = TargetSelector.GetTarget(Q.Range, DamageType.Physical);
+				var targetW = TargetSelector.GetTarget(W.Range, DamageType.Mixed);    
+				var targetR = TargetSelector.GetTarget(R.Range, DamageType.Physical);
+                if (KillStealMenu.CheckBox("Q") && (result.Q || Q.IsKillable(enemy)) && Q.IsReady && targetQ.IsValidTarget(Q.Range) && !IsCastingR)
                 {
                     CastQ(enemy);
                 }
-                if (KillStealMenu.CheckBox("W") && (result.W || W.IsKillable(enemy)))
+                if (KillStealMenu.CheckBox("Qmin") && (result.Q || Q.IsKillable(enemy)) && Minion != null && Q.IsReady && !IsCastingR)
+                {
+                    CastQ(Minion);
+                }
+                if (KillStealMenu.CheckBox("W") && (result.W || W.IsKillable(enemy)) && W.IsReady && targetW.IsValidTarget(W.Range) && !IsCastingR)
                 {
                     CastW(enemy);
                 }
-                if (KillStealMenu.CheckBox("E") && (result.E || E.IsKillable(enemy)))
+                if (KillStealMenu.CheckBox("E") && (result.E || E.IsKillable(enemy)) && E.IsReady && !IsCastingR)
                 {
                     CastE(enemy);
                 }
-                if (KillStealMenu.CheckBox("R") && IsCastingR && enemy.TotalShieldHealth() <= GetCurrentShotDamage(enemy))
+                if (KillStealMenu.CheckBox("R") && IsCastingR && enemy.TotalShieldHealth() <= GetCurrentShotDamage(enemy) && targetR.IsValidTarget(R.Range) && !targetR.IsValidTarget(W.Range) && R.IsReady)
                 {
                     CastR();
                 }
@@ -346,15 +359,15 @@ namespace Jhin.Champions
         {
             if (Target != null)
             {
-                if (ComboMenu.CheckBox("E"))
+                if (ComboMenu.CheckBox("E") && !IsCastingR)
                 {
                     CastE(Target);
                 }
-                if (ComboMenu.CheckBox("W"))
+                if (ComboMenu.CheckBox("W") && !IsCastingR)
                 {
                     CastW(Target);
                 }
-                if (ComboMenu.CheckBox("Q"))
+                if (ComboMenu.CheckBox("Q") && !IsCastingR)
                 {
                     CastQ(Target);
                 }
@@ -368,15 +381,15 @@ namespace Jhin.Champions
             {
                 if (Target != null)
                 {
-                    if (HarassMenu.CheckBox("Q"))
+                    if (HarassMenu.CheckBox("Q") && !IsCastingR)
                     {
                         CastQ(Target);
                     }
-                    if (HarassMenu.CheckBox("W"))
+                    if (HarassMenu.CheckBox("W") && !IsCastingR)
                     {
                         CastW(Target);
                     }
-                    if (HarassMenu.CheckBox("E"))
+                    if (HarassMenu.CheckBox("E") && !IsCastingR)
                     {
                         CastE(Target);
                     }
@@ -437,6 +450,7 @@ namespace Jhin.Champions
                     Q.EnemyMinionsCanBeCalculated = true;
                     Q.LaneClearMinionsCanBeCalculated = true;
                     Q.EnemyHeroesCanBeCalculated = true;
+					/*
                     var best = Q.GetBestCircularObject(Q.EnemyMinions.Concat(Q.EnemyHeroes).ToList());
                     if (best.Hits > 0 && best.Target.IsInRange(target, Q.Width))
                     {
@@ -452,7 +466,6 @@ namespace Jhin.Champions
                         Q.Cast(target);
                     }
                 }
-                /*
                 var bestMinion = Q.LaneClear(false);
                 if (bestMinion != null && bestMinion.IsInRange(target, Q.Width) &&
                     Q.EnemyMinions.Count(o => o.IsInRange(bestMinion, Q.Width)) <= 3)
@@ -468,31 +481,36 @@ namespace Jhin.Champions
                         Q.Cast(target);
                     }
                 }*/
+			}
                 Q.Type = SpellType.Targeted;
             }
         }
         public void CastW(Obj_AI_Base target)
         {
-            if (W.IsReady && target != null)
+			
+			var TargetW = TargetSelector.GetTarget(W.Range, DamageType.Physical);
+			var predictionW = W.GetPrediction(TargetW);
+            if (W.IsReady && target != null && !IsCastingR || predictionW.HitChance >= HitChance.Immobile && !IsCastingR )
             {
-                if (Core.GameTickCount - LastBlockTick < 750)
+                if (Core.GameTickCount - LastBlockTick < 650)
                 {
                     return;
                 }
-                if (Core.GameTickCount - WShouldWaitTick < 750)
+                if (Core.GameTickCount - WShouldWaitTick < 650)
                 {
                     return;
                 }
-                if (MyHero.CountEnemiesInRange(400) != 0)
+                if (MyHero.CountEnemiesInRange(300) != 0)
                 {
                     return;
                 }
                 var hero = target as AIHeroClient;
+
                 if (hero != null)
                 {
-                    if (!TargetHaveEBuff(hero))
+                    if (MyHero.IsInAutoAttackRange(target) && !TargetHaveEBuff(hero))
                     {
-                        if ((Orbwalker.CanAutoAttack && MyHero.IsInAutoAttackRange(target)) || (E.IsReady && E.InRange(hero)))
+						if ((Orbwalker.CanAutoAttack && MyHero.IsInAutoAttackRange(target)) || (E.IsReady && E.InRange(hero)))
                         {
                             return;
                         }
@@ -503,7 +521,7 @@ namespace Jhin.Champions
         }
         public void CastE(Obj_AI_Base target)
         {
-            if (E.IsReady && target != null)
+            if (E.IsReady && target != null && !IsCastingR)
             {
                 E.Cast(target);
             }
@@ -518,10 +536,13 @@ namespace Jhin.Champions
                         h => h.IsInRange(MousePos, UltimateMenu.Slider("NearMouse.Radius"))).ToList()
                     : rTargets;
                 var target = TargetSelector.GetTarget(targets, DamageType.Physical);
+				var preqRXD = HitChance.High;
                 if (target != null)
                 {
                     var pred = R.GetPrediction(target);
-                    if (pred.HitChancePercent >= R.HitChancePercent)
+                    if (pred.HitChance >= preqRXD) /*
+                    if (pred.HitChancePercent >= R.HitChancePercent) 
+						*/
                     {
                         MyHero.Spellbook.CastSpell(SpellSlot.R, pred.CastPosition);
                     }
@@ -543,16 +564,16 @@ namespace Jhin.Champions
                 {
                     case SpellSlot.Q:
                         return MyHero.CalculateDamageOnUnit(target, DamageType.Physical,
-                            25f * level + 35f + (0.25f + 0.05f * level) * MyHero.TotalAttackDamage + 0.6f * MyHero.FlatMagicDamageMod);
+                            20f * level + 35f + (0.25f + 0.05f * level) * MyHero.TotalAttackDamage + 0.6f * MyHero.FlatMagicDamageMod);
                     case SpellSlot.W:
                         return MyHero.CalculateDamageOnUnit(target, DamageType.Physical,
-                            (target is AIHeroClient ? 1f : 0.65f) * (35f * level + 15f + 0.7f * MyHero.TotalAttackDamage));
+                            (target is AIHeroClient ? 1f : 0.65f) * (30f * level + 15f + 0.7f * MyHero.TotalAttackDamage));
                     case SpellSlot.E:
                         return MyHero.CalculateDamageOnUnit(target, DamageType.Magical,
-                            (target is AIHeroClient ? 1f : 0.65f) * (60f * level - 40f + 1.2f * MyHero.TotalAttackDamage + 1f * MyHero.FlatMagicDamageMod));
+                            (target is AIHeroClient ? 1f : 0.65f) * (55f * level - 40f + 1.2f * MyHero.TotalAttackDamage + 1f * MyHero.FlatMagicDamageMod));
                     case SpellSlot.R:
                         var shotDamage =
-                            MyHero.CalculateDamageOnUnit(target, DamageType.Physical, 75f * level - 25f + 0.25f * MyHero.TotalAttackDamage) * (1f + 0.02f * (target.MaxHealth - target.Health) / target.MaxHealth * 100f);
+                            MyHero.CalculateDamageOnUnit(target, DamageType.Physical, 70f * level - 25f + 0.25f * MyHero.TotalAttackDamage) * (1f + 0.02f * (target.MaxHealth - target.Health) / target.MaxHealth * 100f);
                         var normalShotsDamage = (Stacks - 1) * shotDamage;
                         var lastShotDamage = (2f + (MyHero.HasItem(ItemId.Infinity_Edge) ? 0.5f : 0f)) * shotDamage;
                         return normalShotsDamage + lastShotDamage;
