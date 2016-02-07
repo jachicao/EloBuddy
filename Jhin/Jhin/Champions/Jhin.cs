@@ -148,7 +148,7 @@ namespace Jhin.Champions
                             TapKeyPressed = true;
                         }
                     };
-					KeysMenu.AddValue("UltKey", new KeyBind("R Key", false, KeyBind.BindTypes.HoldActive, 'R')).OnValueChange +=
+					KeysMenu.AddValue("UltKey", new KeyBind("R Key in game", false, KeyBind.BindTypes.HoldActive, 'R')).OnValueChange +=
 					delegate (ValueBase<bool> sender, ValueBase<bool>.ValueChangeArgs args)
                     {
                         if (args.NewValue && R.IsLearned && (R.IsReady || IsCastingR))
@@ -158,7 +158,7 @@ namespace Jhin.Champions
                     };
 					ToggleManager.RegisterToggle(
                     KeysMenu.AddValue("AutoW",
-                    new KeyBind("AutoW Toggle", true, KeyBind.BindTypes.PressToggle, 'K')),
+                    new KeyBind("AutoW Toggle", false, KeyBind.BindTypes.PressToggle, 'K')),
                     delegate
                     {
                         foreach (var enemy in UnitManager.ValidEnemyHeroes.Where(TargetHaveEBuff))
@@ -183,7 +183,7 @@ namespace Jhin.Champions
             }
             MenuManager.AddSubMenu("Ultimate");
             {
-                UltimateMenu.AddStringList("Mode", "R AIM Mode", new[] { "Disabled", "Using TapKey", "Automatic" }, 2);
+                UltimateMenu.AddStringList("Mode", "R AIM Mode", new[] { "Disabled", "Using TapKey", "Automatic" }, 3);
                 UltimateMenu.AddValue("OnlyKillable", new CheckBox("Only attack if it's killable", false));
                 UltimateMenu.AddValue("Delay", new Slider("Delay between R's (in ms)", 0, 0, 1500));
                 UltimateMenu.AddValue("NearMouse", new GroupLabel("Near Mouse Settings"));
@@ -216,7 +216,7 @@ namespace Jhin.Champions
                 ClearMenu.AddValue("JungleClear", new GroupLabel("JungleClear"));
                 {
                     ClearMenu.AddValue("JungleClear.Q", new CheckBox("Use Q"));
-                    ClearMenu.AddValue("JungleClear.W", new CheckBox("Use W"));
+                    ClearMenu.AddValue("JungleClear.W", new CheckBox("Use W", false));
                     ClearMenu.AddValue("JungleClear.E", new CheckBox("Use E", false));
                     ClearMenu.AddValue("JungleClear.ManaPercent", new Slider("Minimum Mana Percent", 20));
                 }
