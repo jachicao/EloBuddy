@@ -55,6 +55,11 @@ namespace CoreDebugger
             get { return _myMenu["Spellbook"].Cast<CheckBox>().CurrentValue; }
         }
 
+        private static bool CheckMissileClient
+        {
+            get { return _myMenu["MissileClient"].Cast<CheckBox>().CurrentValue; }
+        }
+
         private static void Main()
         {
             Loading.OnLoadingComplete += delegate { Initialize(); };
@@ -73,6 +78,7 @@ namespace CoreDebugger
             _myMenu.Add("Prediction", new CheckBox("Prediction", false)).OnValueChange += OnOnValueChange;
             _myMenu.Add("StreamingMode", new CheckBox("Streaming Mode", false)).OnValueChange += OnOnValueChange;
             _myMenu.Add("Spellbook", new CheckBox("Spellbook", false)).OnValueChange += OnOnValueChange;
+            _myMenu.Add("MissileClient", new CheckBox("MissileClient", false)).OnValueChange += OnOnValueChange;
             _myMenu["StreamingMode"].Cast<CheckBox>().CurrentValue = false;
             _myMenu.AddGroupLabel("AutoAttack");
             _myMenu.Add("autoAttackDamage", new CheckBox("Print autoattack damage")).OnValueChange += OnOnValueChange;
@@ -81,7 +87,7 @@ namespace CoreDebugger
                 value.CurrentValue = false;
             }
             var autoAttacking = false;
-            AttackableUnit.OnDamage += delegate(AttackableUnit sender, AttackableUnitDamageEventArgs args)
+            AttackableUnit.OnDamage += delegate (AttackableUnit sender, AttackableUnitDamageEventArgs args)
             {
                 if (args.Source.IsMe)
                 {
@@ -99,14 +105,14 @@ namespace CoreDebugger
                     }
                 }
             };
-            Obj_AI_Base.OnBasicAttack += delegate(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
+            Obj_AI_Base.OnBasicAttack += delegate (Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
             {
                 if (sender.IsMe)
                 {
                     autoAttacking = true;
                 }
             };
-            Player.OnPostIssueOrder += delegate(Obj_AI_Base sender, PlayerIssueOrderEventArgs args)
+            Player.OnPostIssueOrder += delegate (Obj_AI_Base sender, PlayerIssueOrderEventArgs args)
             {
                 if (sender.IsMe)
                 {
@@ -199,7 +205,7 @@ namespace CoreDebugger
                                 "IsActive : " + buff.IsActive + ", IsValid: " + buff.IsValid + ", HasBuff: " + target.HasBuff(buff.DisplayName) + ", Type: " + buff.Type + ", Name: " + buff.Name +
                                 ", DisplayName: " + buff.DisplayName + ", Count: " +
                                 buff.Count + (!string.IsNullOrEmpty(buff.SourceName) ? ", SourceName: " + buff.SourceName : "") + ", Caster: " + buff.Caster.Name +
-                                (buff.Caster is Obj_AI_Base ? ", CasterBaseSkinName: " + ((Obj_AI_Base) buff.Caster).BaseSkinName : "") + ", RemainingTime: " +
+                                (buff.Caster is Obj_AI_Base ? ", CasterBaseSkinName: " + ((Obj_AI_Base)buff.Caster).BaseSkinName : "") + ", RemainingTime: " +
                                 stringEndTime);
                         }
                     }
@@ -225,11 +231,47 @@ namespace CoreDebugger
                     {
                         foreach (var spell in target.Spellbook.Spells)
                         {
-                            if (spell != null)
+                            if (spell != null && !spell.Name.Contains("Unknown") && !spell.Name.Contains("BaseSpell"))
                             {
-                                DrawText(target, "Name: " + spell.Name + ", Slot: " + spell.Slot + ", State: " + spell.State + ", CastRange: " + spell.SData.CastRange + ", MissileSpeed: " + spell.SData.MissileSpeed);
+                                DrawText(target, "Name: " + spell.Name + ", Slot: " + spell.Slot + ", State: " + spell.State + ", ToggleState: " + spell.ToggleState + ", Level: " + spell.Level + ", Cooldown: " + spell.Cooldown + ", CooldownExpires: " + Math.Max(0f, spell.CooldownExpires - Game.Time) + ", Ammo: " + spell.Ammo + ", CastRange: " + spell.SData.CastRange + ", CastRangeDisplayOverride: " + spell.SData.CastRangeDisplayOverride);
                             }
                         }
+                    }
+                }
+                if (CheckMissileClient)
+                {
+                    var missiles = ObjectManager.Get<MissileClient>().Where(i => i.IsValid && !i.IsDead);
+                    foreach (var missile in missiles)
+                    {
+                        DrawText(missile, "Slot: " + missile.Slot);
+                        var caster = missile.SpellCaster;
+                        if (caster != null)
+                        {
+                            DrawText(missile, "SpellCaster: " +caster.BaseSkinName);
+                        }
+                        var target = missile.Target as Obj_AI_Base;
+                        var targetIsValid = target != null;
+                        if (targetIsValid)
+                        {
+                            DrawText(missile, "Target: " + target.BaseSkinName);
+                        }
+                        DrawText(missile, "Name: " + missile.SData.Name);
+                        DrawText(missile, "StartPosition: " + missile.StartPosition);
+                        DrawText(missile, "EndPosition: " + missile.EndPosition);
+                        var missileTravelFixed = missile.SData.MissileFixedTravelTime;
+                        if (missileTravelFixed > 0)
+                        {
+                            DrawText(missile, "MissileFixedTravelTime: " + missile.SData.MissileFixedTravelTime);
+                        }
+                        else
+                        {
+                            DrawText(missile, "MissileSpeed: " + missile.SData.MissileSpeed);
+                            if (missile.SData.LineWidth > 0)
+                            {
+                                DrawText(missile, "LineWidth: " + missile.SData.LineWidth);
+                            }
+                        }
+
                     }
                 }
             };
@@ -249,7 +291,7 @@ namespace CoreDebugger
             }
         }
 
-        private static void DrawText(Obj_AI_Base target, string text)
+        private static void DrawText(GameObject target, string text)
         {
             if (!Counters.ContainsKey(target.NetworkId))
             {
@@ -259,8 +301,8 @@ namespace CoreDebugger
             {
                 Counters[target.NetworkId]++;
             }
-            var minionBarPosition = new Vector2(target.HPBarXOffset, 50 + target.HPBarYOffset + Counters[target.NetworkId] * 18) + target.Position.WorldToScreen();
-            Drawing.DrawText(minionBarPosition, System.Drawing.Color.AliceBlue, text, 10);
+            var targetPosition = new Vector2(0, 30 + Counters[target.NetworkId] * 18) + target.Position.WorldToScreen();
+            Drawing.DrawText(targetPosition, System.Drawing.Color.AliceBlue, text, 10);
         }
     }
 }
