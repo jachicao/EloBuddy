@@ -57,7 +57,7 @@ namespace LanguageTranslator
                 var time = Game.Time;
                 Game.OnTick += delegate
                 {
-                    if (Game.Time - time >= 5 && time > 0)
+                    if (Game.Time - time >= 2 && time > 0)
                     {
                         time = 0;
                         _programDirectory = Path.Combine(SandboxConfig.DataDirectory, "LanguageTranslator");
@@ -172,19 +172,35 @@ namespace LanguageTranslator
                 {
                     var addonId = menu.Parent == null ? menu.DisplayName : menu.Parent.DisplayName;
                     menu.DisplayName = GetTranslationFromDisplayName(addonId, from, to, menu.DisplayName);
-                    foreach (var subMenu in menu.SubMenus)
-                    {
-                        subMenu.DisplayName = GetTranslationFromDisplayName(addonId, from, to, subMenu.DisplayName);
-                    }
                     foreach (var pair2 in menu.LinkedValues)
                     {
                         pair2.Value.DisplayName = GetTranslationFromDisplayName(addonId, from, to, pair2.Value.DisplayName);
+                        var comboBox = pair2.Value as ComboBox;
+                        if (comboBox != null)
+                        {
+                            foreach (var val in comboBox.Overlay.Children)
+                            {
+                                val.TextValue = GetTranslationFromDisplayName(addonId, from, to, val.TextValue);
+                            }
+                        }
+                    }
+                    foreach (var subMenu in menu.SubMenus)
+                    {
+                        subMenu.DisplayName = GetTranslationFromDisplayName(addonId, from, to, subMenu.DisplayName);
                     }
                     foreach (var subMenu in menu.SubMenus)
                     {
                         foreach (var pair2 in subMenu.LinkedValues)
                         {
                             pair2.Value.DisplayName = GetTranslationFromDisplayName(addonId, from, to, pair2.Value.DisplayName);
+                            var comboBox = pair2.Value as ComboBox;
+                            if (comboBox != null)
+                            {
+                                foreach (var val in comboBox.Overlay.Children)
+                                {
+                                    val.TextValue = GetTranslationFromDisplayName(addonId, from, to, val.TextValue);
+                                }
+                            }
                         }
                     }
                 }
@@ -232,6 +248,7 @@ namespace LanguageTranslator
 
         private static void Save()
         {
+            Translate((Language)_menu["Language"].Cast<ComboBox>().CurrentValue, Language.English);
             foreach (var pair in MainMenu.MenuInstances)
             {
                 foreach (var menu in pair.Value)
@@ -257,18 +274,31 @@ namespace LanguageTranslator
                         dictionary.Add(counter, value);
                         counter++;
                     }
-                    foreach (var subMenu in menu.SubMenus)
+                    foreach (var pair2 in menu.LinkedValues)
                     {
-                        var value2 = subMenu.DisplayName;
+                        var value2 = pair2.Value.DisplayName;
                         if (dictionary.All(i => i.Value != value2))
                         {
                             dictionary.Add(counter, value2);
                             counter++;
                         }
+                        var comboBox = pair2.Value as ComboBox;
+                        if (comboBox != null)
+                        {
+                            foreach (var val in comboBox.Overlay.Children)
+                            {
+                                var value3 = val.TextValue;
+                                if (dictionary.All(i => i.Value != value3))
+                                {
+                                    dictionary.Add(counter, value3);
+                                    counter++;
+                                }
+                            }
+                        }
                     }
-                    foreach (var pair2 in menu.LinkedValues)
+                    foreach (var subMenu in menu.SubMenus)
                     {
-                        var value2 = pair2.Value.DisplayName;
+                        var value2 = subMenu.DisplayName;
                         if (dictionary.All(i => i.Value != value2))
                         {
                             dictionary.Add(counter, value2);
@@ -284,6 +314,19 @@ namespace LanguageTranslator
                             {
                                 dictionary.Add(counter, value2);
                                 counter++;
+                            }
+                            var comboBox = pair2.Value as ComboBox;
+                            if (comboBox != null)
+                            {
+                                foreach (var val in comboBox.Overlay.Children)
+                                {
+                                    var value3 = val.TextValue;
+                                    if (dictionary.All(i => i.Value != value3))
+                                    {
+                                        dictionary.Add(counter, value3);
+                                        counter++;
+                                    }
+                                }
                             }
                         }
                     }
@@ -313,7 +356,8 @@ namespace LanguageTranslator
             Turkish,
             Chinese,
             ChineseTraditional,
-            Korean
+            Korean,
+            Romanian
         }
     }
 }
