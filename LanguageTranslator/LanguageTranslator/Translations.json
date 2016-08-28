@@ -119,6 +119,26 @@
 			"15": "Cu cât valoarea este mai mică, cu atât va face clickuri mai repede.",
 			"16": "Întârzierea minimă (Implicit 150)",
 			"17": "Întârzierea maximă (Implicit 350)"
+		},
+		"Vietnamese": {
+			"0": "Lõi",
+			"1": "Ticks Per Second",
+			"2": "         ﻿Giá trị được đề nghị: 25.",
+			"3": "﻿Lưu ý: Ticks mỗi thứ hai có nghĩa là mức độ thường xuyên các sự kiện Game.OnTick nên được loại bỏ.",
+			"4": "﻿Điều này có nghĩa là tùy chọn này không phải là một humanizer, ﻿chỉ là một lựa chọn hiệu suất.",
+			"5": "Ví dụ: 25 t/s ﻿có nghĩa là Game.OnTick bị loại bỏ 25 lần mỗi giây.",
+			"6": "﻿Giá trị cao hơn có nghĩa là tải trọng hơn mỗi giây, mà có thể làm giảm FPS nhẹ hơn.",
+			"7": "Hacks",
+			"8": "Chế Độ Stream",
+			"9": "Cho Phép Nói Chuyện Trong Game",
+			"10": "Kích hoạt tính năng chống AFK",
+			"11": "Enable Movement Hack",
+			"12": "Vẽ phạm vi trụ",
+			"13": "Draw EloBuddy Watermark",
+			"14": "Click delay",
+			"15": "Càng ít giá trị thanh trượt là nhanh hơn, nó sẽ kích.",
+			"16": "Giá trị delay nhỏ nhất (Default 150)",
+			"17": "Giá trị delay lớn nhất (Default 350)"
 		}
 	},
 	"Target Selector": {
@@ -211,6 +231,24 @@
 			"13": "只攻擊選擇目標設置",
 			"14": "啟用只攻擊選定目標",
 			"15": "只有進攻選擇目標切換"
+		},
+		"Vietnamese": {
+			"0": "Lựa chọn đối tượng",
+			"1": "Chế độ lựa chọn đối tượng ",
+			"2": "Chế độ chọn:",
+			"3": "Auto",
+			"4": "MostStack",
+			"5": "MostAbilityPower",
+			"6": "MostAttackDamage",
+			"7": "LeastHealth",
+			"8": "Closest",
+			"9": "Lựa chọn đối tượng Settings",
+			"10": "﻿Sử nhắm mục tiêu được lựa chọn bằng tay",
+			"11": "﻿Vẽ một vòng tròn xung quanh mục tiêu được lựa chọn",
+			"12": "﻿Vẽ các thông báo về các mục tiêu được lựa chọn",
+			"13": "﻿Chỉ Tấn Công Mục Tiêu Được Lựa Chọn Cài Đặt",
+			"14": "Chỉ cho phép tấn công mục tiêu được lựa chọn",
+			"15": "﻿Chỉ có thể tấn công mục tiêu được lựa chọn chuyển đổi"
 		}
 	},
 	"Orbwalker": {
@@ -443,6 +481,52 @@
 			"41": "遊戲內更新事件獲取方法",
 			"42": "使用Game.OnTick (更多FPS)",
 			"43": "使用Game.OnUpdate (反應更快)"
+		},
+		"Vietnamese": {
+			"0": "Orbwalker",
+			"1": "﻿Phím nóng",
+			"2": "Combo",
+			"3": "Quấy rối",
+			"4": "Dọn lính",
+			"5": "Dọn rừng",
+			"6": "Farm hit cuối",
+			"7": "﻿Chạy trốn",
+			"8": "﻿Cài đặt phụ",
+			"9": "﻿Tấn công các đối tượng khác",
+			"10": "Tấn công tướng trong chế độ dọn lính",
+			"11": "Nhắm vào mục tiêu (chỉ cận chiến)",
+			"12": "﻿Bao gồm thời gian ping vào tính toán",
+			"13": "﻿Hoang tưởng: Nhìn như con người càng tốt!",
+			"14": "Fast kiting",
+			"15": "Giữ bán kính",
+			"16": "﻿Sự chậm trễ giữa phong trào trong mili giây",
+			"17": "﻿Thời gian phụ windup",
+			"18": "﻿Mẹo: Nếu tự động đánh của bạn nhận được hủy bỏ quá nhiều, bạn có thể sửa chữa nó bằng cách thêm nhiều thời gian phụ windup.",
+			"19": "Farming",
+			"20": "Vòng vẽ",
+			"21": "Nâng cao",
+			"22": "﻿Thiết lập linh tinh",
+			"23": "Priorize LastHit over Harass",
+			"24": "Priorize Freeze over Push",
+			"25": "Extra farm delay",
+			"26": "Masteries Settings",
+			"27": "Double-Edged Sword (Ferocity Tree)",
+			"28": "Assassin (Cunning Tree)",
+			"29": "Savagery (Cunning Tree)",
+			"30": "Merciless (Cunning Tree)",
+			"31": "Item Settings",
+			"32": "Sử dụng Tiamat/Hydra trên những lính không chết",
+			"33": "phạm vi tấn công tự động",
+			"34": "phạm vi tấn công tự động của kẻ địch",
+			"35": "Hold radius (see main menu)",
+			"36": "Lasthittable minions",
+			"37": "Vẽ thiệt hại trên lính",
+			"38": "Orbwalker control",
+			"39": "Vô hiệu hóa tấn công tự động",
+			"40": "﻿Vô hiệu hóa di chuyển đến chuột",
+			"41": "﻿Cập Nhật sự kiện nghe",
+			"42": "Use Game.OnTick (more fps)",
+			"43": "Update Game.OnUpdate (faster reaction)"
 		}
 	},
 	"Prediction": {
@@ -510,6 +594,19 @@
 			"8": "碰撞",
 			"9": "額外命中格半徑",
 			"10": "在計算時增加目標的命中格."
+		},
+		"Vietnamese": {
+			"0": "﻿Dự đoán",
+			"1": "﻿Dự đoán đã chọn:",
+			"2": "SDK Prediction",
+			"3": "SDK Beta Prediction",
+			"4": "ICPrediction",
+			"5": "﻿Tổng quát",
+			"6": "﻿Skillshot phạm vi quy mô {0}%",
+			"7": "Nó cho phép bạn điều chỉnh phạm vi skillshot.",
+			"8": "﻿Va chạm",
+			"9": "Extra Hitbox Radius",
+			"10": "﻿Thêm nhiều hitbox vào đối tượng khi tính toán va chạm."
 		}
 	},
 	"MasterMind": {
@@ -847,7 +944,8 @@
 			"11": "ChineseTraditional",
 			"12": "Korean",
 			"13": "Romanian",
-			"14": "Save Current Addons Names"
+			"14": "Vietnamese"
+			"15": "Save Current Addons Names"
 		},
 		"French": {
 			"0": "Traducteur",
@@ -864,7 +962,8 @@
 			"11": "ChineseTraditional",
 			"12": "Korean",
 			"13": "Romanian",
-			"14": "Enregistrer Les Noms Des Addons Actuels"
+			"14": "Vietnamese"
+			"15": "Enregistrer Les Noms Des Addons Actuels"
 		},
 		"Korean": {
 			"0": "언어번역기",
@@ -881,7 +980,8 @@
 			"11": "ChineseTraditional",
 			"12": "Korean",
 			"13": "Romanian",
-			"14": "현제 애드온의 이름들을 저장"
+			"14": "Vietnamese"
+			"15": "현제 애드온의 이름들을 저장"
 		}
 	}
 }
