@@ -42,7 +42,9 @@ namespace LanguageTranslator
             { "tr-TR", Language.Turkish },
             { "zh-CHS", Language.Chinese },
             { "zh-CHT", Language.ChineseTraditional },
-            { "ko-KR", Language.Korean }
+            { "ko-KR", Language.Korean },
+            { "ro-RO", Language.Romanian },
+            { "vi-VN", Language.Vietnamese },
         };
         private static bool _jsonPathExists;
         private static Language CurrentCulture
@@ -357,7 +359,8 @@ namespace LanguageTranslator
             Chinese,
             ChineseTraditional,
             Korean,
-            Romanian
+            Romanian,
+            Vietnamese
         }
     }
 }
