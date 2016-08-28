@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -41,6 +41,7 @@ namespace LanguageTranslator
             { "pl-PL", Language.Polish },
             { "tr-TR", Language.Turkish },
             { "zh-CHS", Language.Chinese },
+            { "zh-CHT", Language.ChineseTraditional },
             { "ko-KR", Language.Korean }
         };
         private static bool _jsonPathExists;
@@ -311,6 +312,7 @@ namespace LanguageTranslator
             Polish,
             Turkish,
             Chinese,
+            ChineseTraditional,
             Korean
         }
     }
