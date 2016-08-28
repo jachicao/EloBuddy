@@ -80,7 +80,7 @@
       "16": "En az Gecikme (Varsayılan 150)",
       "17": "En fazla Gecikme (Varsayılan 350)"
     },
-    "Chinese": {
+    "ChineseTraditional": {
       "0": "核心",
       "1": "副選單",
       "2": "串流模式:",
@@ -150,7 +150,7 @@
       "8": "Sadece Seçilen Hedefe Saldırma Aktif",
       "9": "Sadece Seçilen Hedefe Saldır Kısayol Tuşu"
     },
-    "Chinese": {
+    "ChineseTraditional": {
       "0": "目標選擇器",
       "1": "目標選擇器模式",
       "2": "已選擇模式:",
@@ -348,7 +348,7 @@
       "42": "Kullan Game.OnTick (Daha fazla FPS ayarı)",
       "43": "Hızlı Modül Kullan Game.OnUpdate (Daha hızlı hareketler için)"
     },
-    "Chinese": {
+    "ChineseTraditional": {
       "0": "走砍",
       "1": "農兵",
       "2": "顯示",
@@ -436,7 +436,7 @@
       "6": "Ekstra Kaçış Menzili(Extra Hitbox Radius)",
       "7": "Kesişmeyi hesaplarken objelere alan ekle"
     },
-    "Chinese": {
+    "ChineseTraditional": {
       "0": "預判",
       "1": "預判選擇:",
       "2": "通用",
@@ -692,7 +692,7 @@
       "57": "Not: Bu arada takımın son yerlerini ve attıkları totemleri gösterebiliyorum",
       "58": "Ben eğer tuzak ve ward yerinde durmuyorsa daireyi göstermem örnek caitin tuzağına biri düşerse daireyi kapatırım çünkü tuzak kalmaz."
     },
-    "Chinese": {
+    "ChineseTraditional": {
       "0": "神意識",
       "1": "冷卻時間跟踪器",
       "2": "飾品跟踪器",
