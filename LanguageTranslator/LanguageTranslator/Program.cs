@@ -53,31 +53,36 @@ namespace LanguageTranslator
         {
             Loading.OnLoadingComplete += delegate
             {
-                _programDirectory = Path.Combine(SandboxConfig.DataDirectory, "LanguageTranslator");
-                if (!Directory.Exists(_programDirectory))
-                {
-                    Directory.CreateDirectory(_programDirectory);
-                }
-                _jsonPath = Path.Combine(_programDirectory, "Translations.json");
-                _jsonPathExists = File.Exists(_jsonPath);
-                if (!_jsonPathExists)
-                {
-                    File.Create(_jsonPath).Close();
-                    DownloadNewJson();
-                }
-                else
-                {
-                    var jsonConvert = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<Language, Dictionary<int, string>>>>(File.ReadAllText(_jsonPath));
-                    if (jsonConvert != null)
-                    {
-                        Translations = jsonConvert;
-                    }
-                    var webClient = new WebClient();
-                    webClient.DownloadStringCompleted += VersionCompleted;
-                    webClient.DownloadStringAsync(new Uri(VersionUrl, UriKind.Absolute));
-                }
+                var time = Game.Time;
                 Game.OnTick += delegate
                 {
+                    if (Game.Time - time >= 5 && time > 0)
+                    {
+                        time = 0;
+                        _programDirectory = Path.Combine(SandboxConfig.DataDirectory, "LanguageTranslator");
+                        if (!Directory.Exists(_programDirectory))
+                        {
+                            Directory.CreateDirectory(_programDirectory);
+                        }
+                        _jsonPath = Path.Combine(_programDirectory, "Translations.json");
+                        _jsonPathExists = File.Exists(_jsonPath);
+                        if (!_jsonPathExists)
+                        {
+                            File.Create(_jsonPath).Close();
+                            DownloadNewJson();
+                        }
+                        else
+                        {
+                            var jsonConvert = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<Language, Dictionary<int, string>>>>(File.ReadAllText(_jsonPath));
+                            if (jsonConvert != null)
+                            {
+                                Translations = jsonConvert;
+                            }
+                            var webClient = new WebClient();
+                            webClient.DownloadStringCompleted += VersionCompleted;
+                            webClient.DownloadStringAsync(new Uri(VersionUrl, UriKind.Absolute));
+                        }
+                    }
                     if (_ready)
                     {
                         OnLoad();
