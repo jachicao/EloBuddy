@@ -20,6 +20,26 @@
       "16": "Minimum delay (Default 150)",
       "17": "Maximum delay (Default 350)"
     },
+    "French": {
+      "0": "Coeur",
+      "1": "Hacks",
+      "2": "Mode Streamer",
+      "3": "Ticks Par Secondes",
+      "4": "         Valeur Recommandé: 25.",
+      "5": "Note: Ticks par secondes signifie combien de fois l'event Game.OnTick doit être fait.",
+      "6": "Cela signifie que cette option n'es pas un humanizer, juste une option pour les performances.",
+      "7": "Exemple: 25 t/s signifie Game.OnTick est utilisé 25 fois par secondes.",
+      "8": "Hautes valeurs signifie plus de chargement par secondes, cela reduit les FPS significativement.",
+      "9": "Activer le chat en jeu",
+      "10": "Activer l'Anti-AFK",
+      "11": "Activer le hack de déplacement",
+      "12": "Afficher la portée des tourelles",
+      "13": "Afficher EloBuddy",
+      "14": "Delai de clics",
+      "15": "Plus la valeur est basse, plus les clics seront rapides.",
+      "16": "Délai minimum (Défaut 150)",
+      "17": "Délai maximum (Défaut 350)"
+    },
     "Spanish": {
       "0": "Core",
       "1": "Hacks",
@@ -53,6 +73,18 @@
       "7": "Only Attack Selected Target Settings",
       "8": "Enable only attack selected target",
       "9": "Only attack selected target toggle"
+    },
+    "French": {
+      "0": "Sélecteur de cible",
+      "1": "Mode de sélection",
+      "2": "Mode sélectionné:",
+      "3": "Paramétres de cible sélectionné",
+      "4": "Activer le sélecteur de cible manuel",
+      "5": "Déssiner un cercle autour de la cible sélectionné",
+      "6": "Afficher les notifications de la cible",
+      "7": "Paramétre d'attaque pour la cible sélectionné",
+      "8": "Activer :Attaque juste la cible sélectionné",
+      "9": "Touche pour activer: Attaque juste la cible sélectionné"
     }
   },
   "Orbwalker": {
@@ -101,6 +133,52 @@
       "41": "Update event listening",
       "42": "Use Game.OnTick (more fps)",
       "43": "Update Game.OnUpdate (faster reaction)"
+    },
+    "French": {
+      "0": "Orbwalker",
+      "1": "Farmer",
+      "2": "Affichage",
+      "3": "Avancés",
+      "4": "Touches",
+      "5": "Combo",
+      "6": "Harass",
+      "7": "LaneClear",
+      "8": "JungleClear",
+      "9": "LastHit",
+      "10": "Fuir",
+      "11": "Paramétres bonus",
+      "12": "Attaquer les autres objets",
+      "13": "Attaquer les champions en mode LaneClear",
+      "14": "Coller la cible (juste mélée)",
+      "15": "Intégrer le ping dans les calculs",
+      "16": "Parano: Ressemble autant à un humain que possible!",
+      "17": "Kitting rapide",
+      "18": "Rayon de tenue",
+      "19": "Delai entre les mouvements en millisecondes",
+      "20": "Temps bonus après chaque action",
+      "21": "Tip: Si vos attaques sont trop annulées, vous pouvez réglez ça en augmentant le temps entre les actions.",
+      "22": "Paramétres divers",
+      "23": "Priorité au LastHit sur le Poke",
+      "24": "Priorité au Freeze sur le Push",
+      "25": "Delai bonus pour farm",
+      "26": "Paramètres de maitrise",
+      "27": "Epée a double tranchant (Arbre de férocité)",
+      "28": "Assassin (Arbre de la ruse)",
+      "29": "Sauvage (Arbre de la ruse)",
+      "30": "Sans Merci (Arbre de la ruse)",
+      "31": "Paramètres d'items",
+      "32": "Uiliser Tiamat/Hydre pour les sbires untuables",
+      "33": "Distance d'auto-attaque",
+      "34": "Distance d'auto-attaque ennemie",
+      "35": "Rayon de retenue (Menu principal)",
+      "36": "Sbires pouvant être LastHit",
+      "37": "Dégats sur les sbires",
+      "38": "Controle de l'Orbwalk",
+      "39": "Désactiver les auto-attaques",
+      "40": "Désactiver le mouvement vers la souris",
+      "41": "Mettre à jour la liste d'events",
+      "42": "Utiliser Game.OnTick (plus de FPS)",
+      "43": "Mettre à jour Game.OnUpdate (réactions plus rapides)"
     }
   },
   "Prediction": {
@@ -113,6 +191,16 @@
       "5": "Collision",
       "6": "Extra Hitbox Radius",
       "7": "Add more hitbox to objects when calculating collision."
+    },
+    "French": {
+      "0": "Prédiction",
+      "1": "Prediction Sélectionné:",
+      "2": "Général",
+      "3": "Echelle de porté des Skillshots {0}%",
+      "4": "Cela vous autorise à ajuster la portée des skillshots.",
+      "5": "Collision",
+      "6": "Rayon bonus des skillshots",
+      "7": "Ajouter plus de hitbox aux objets pendant le calcul des collisions."
     }
   },
   "MasterMind": {
@@ -176,6 +264,13 @@
       "56": "Show juke direction for {0} seconds",
       "57": "Note: Once I'm able to check if the team has vision on the end position",
       "58": "I will avoid always drawing the spell and instead only draw when there is no vision."
+    },
+    "French": {
+      "0": "Cerveau",
+      "1": "Traqueur de Cooldowns",
+      "2": "Traqueur de Balises",
+      "3": "Hack de carte",
+      "4": "Utilitaire"
     }
   },
   "AimBot": {
