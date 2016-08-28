@@ -110,9 +110,9 @@
 			"6": "Valorile mai mari reprezintă o sarcină mai mare în fiecare secundă, ceea ce poate reduce FPS-ul puţin.",
 			"7": "Hacks",
 			"8": "Mod pentru streaming",
-			"9": "Porneşte chat-ul în joc",
-			"10": "Porneşte Anti AFK",
-			"11": "Porneşte Movement Hack",
+			"9": "Activează chat-ul în joc",
+			"10": "Activează Anti AFK",
+			"11": "Activează Movement Hack",
 			"12": "Desenează Raza Turnurilor",
 			"13": "Desenează Watermark-ul EloBuddy",
 			"14": "Întârzierea clickurilor",
@@ -249,6 +249,24 @@
 			"13": "﻿Chỉ Tấn Công Mục Tiêu Được Lựa Chọn Cài Đặt",
 			"14": "Chỉ cho phép tấn công mục tiêu được lựa chọn",
 			"15": "﻿Chỉ có thể tấn công mục tiêu được lựa chọn chuyển đổi"
+		},
+		"Romanian": {
+			"0": "Selectarea Ţintei",
+			"1": "Mod Selecţie Ţintă",
+			"2": "Mod selectat:",
+			"3": "Auto",
+			"4": "MostStack",
+			"5": "MostAbilityPower",
+			"6": "MostAttackDamage",
+			"7": "LeastHealth",
+			"8": "Closest",
+			"9": "Setări Ţintă Selectată",
+			"10": "Activează selectarea manuală a ţintei",
+			"11": "Desenează un cerc în jurul ţintei selectate",
+			"12": "Desenează notificări despre ţinta selectată",
+			"13": "Setări Atacare Doar Ţintă Selectată",
+			"14": "Activează atacă numai ţinta selectată",
+			"15": "Comută atacă numai ţinta selectată"
 		}
 	},
 	"Orbwalker": {
@@ -1055,6 +1073,24 @@
 			"12": "韓文",
 			"13": "羅馬尼亞文",
 			"14": "保存當前插件名稱"
+		},
+		"Romanian": {
+			"0": "LanguageTranslator",
+			"1": "Limbă:",
+			"2": "Engleză",
+			"3": "Spaniolă",
+			"4": "Franceză",
+			"5": "Germană",
+			"6": "Italiană",
+			"7": "Portugheză",
+			"8": "Poloneză",
+			"9": "Turcă",
+			"10": "Chineză",
+			"11": "Chineză Tradiţională",
+			"12": "Coreeană",
+			"13": "Română",
+			"14": "Vietnameză",
+			"15": "Salvează numele addon-urilor curente"
 		}
 	}
 }
