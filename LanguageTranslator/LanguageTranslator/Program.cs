@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+using System.Text;
 using System.Text.RegularExpressions;
 using EloBuddy;
 using EloBuddy.Sandbox;
@@ -81,7 +82,7 @@ namespace LanguageTranslator
                             {
                                 Translations = jsonConvert;
                             }
-                            var webClient = new WebClient();
+                            var webClient = new WebClient { Encoding = Encoding.UTF8 };
                             webClient.DownloadStringCompleted += VersionCompleted;
                             webClient.DownloadStringAsync(new Uri(VersionUrl, UriKind.Absolute));
                         }
@@ -117,7 +118,7 @@ namespace LanguageTranslator
 
         private static void DownloadNewJson()
         {
-            var webClient = new WebClient();
+            var webClient = new WebClient { Encoding = Encoding.UTF8 };
             webClient.DownloadStringCompleted += JsonDownloaded;
             webClient.DownloadStringAsync(new Uri(JsonUrl, UriKind.Absolute));
         }
