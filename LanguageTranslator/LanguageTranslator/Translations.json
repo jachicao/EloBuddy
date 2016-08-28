@@ -40,26 +40,6 @@
       "16": "Délai minimum (Default 150)",
       "17": "Délai maximum (Default 350)"
     },
-    "Spanish": {
-      "0": "Core",
-      "1": "Hacks",
-      "2": "Streaming Mode",
-      "3": "Ticks Per Second",
-      "4": "         Recommended value: 25.",
-      "5": "Note: Ticks per second means how often the Game.OnTick event should be fired.",
-      "6": "This means this option is not a humanizer, just a performance option.",
-      "7": "Example: 25 t/s means Game.OnTick is being fired 25 times per second.",
-      "8": "Higher values mean more load each second, which could reduce FPS slightly.",
-      "9": "Enable InGame Chat",
-      "10": "Enable Anti AFK",
-      "11": "Enable Movement Hack",
-      "12": "Draw Tower Ranges",
-      "13": "Draw EloBuddy Watermark",
-      "14": "Click delay",
-      "15": "The less the slider values are the faster it will click.",
-      "16": "Minimum delay (Default 150)",
-      "17": "Maximum delay (Default 350)"
-    },
     "Korean": {
       "0": "코어",
       "1": "핵",
