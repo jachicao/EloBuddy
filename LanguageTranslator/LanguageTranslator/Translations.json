@@ -79,6 +79,26 @@
       "15": "Bu değer ne kadar düşükse o kadar çok tıklama yapar.",
       "16": "En az Gecikme (Varsayılan 150)",
       "17": "En fazla Gecikme (Varsayılan 350)"
+    },
+    "Chinese": {
+      "0": "核心",
+      "1": "副選單",
+      "2": "串流模式:",
+      "3": "每秒檢查並回報遊戲發生事件",
+      "4": "         建議數值：25.",
+      "5": "Note: Ticks per second means how often the Game.OnTick event should be fired.",
+      "6": "這意味著，此選項不是一個人性化，不僅僅是性能選項.",
+      "7": "例如：25 t/s 指Game.OnTick是被碰撞每秒25次.",
+      "8": "更高的數值每秒會檢查更多次，但也會減少少量FPS.",
+      "9": "啟用遊戲聊天框顯示資訊功能",
+      "10": "啟用防掛機功能",
+      "11": "啟用移動修正",
+      "12": "顯示防禦塔範圍",
+      "13": "顯示浮水印",
+      "14": "點擊延遲",
+      "15": "更低的數值代表點擊更快.",
+      "16": "最小延遲 (默認 150)",
+      "17": "最大延遲 (默認 350)"
     }
   },
   "Target Selector": {
@@ -129,6 +149,18 @@
       "7": "Sadece Seçilmiş Hedefe Saldırı Ayarları",
       "8": "Sadece Seçilen Hedefe Saldırma Aktif",
       "9": "Sadece Seçilen Hedefe Saldır Kısayol Tuşu"
+    },
+    "Chinese": {
+      "0": "目標選擇器",
+      "1": "目標選擇器模式",
+      "2": "已選擇模式:",
+      "3": "選擇的目標設置",
+      "4": "啟用手動選擇目標(左鍵點擊)",
+      "5": "在手動選擇的目標顯示圓圈",
+      "6": "顯示通知目標",
+      "7": "只攻擊選擇目標設置",
+      "8": "啟用只攻擊選定目標",
+      "9": "只有進攻選擇目標切換"
     }
   },
   "Orbwalker": {
@@ -315,6 +347,52 @@
       "41": "Güncelleme Olaylarını belirt",
       "42": "Kullan Game.OnTick (Daha fazla FPS ayarı)",
       "43": "Hızlı Modül Kullan Game.OnUpdate (Daha hızlı hareketler için)"
+    },
+    "Chinese": {
+      "0": "走砍",
+      "1": "農兵",
+      "2": "顯示",
+      "3": "高級設置",
+      "4": "熱鍵/快捷鍵",
+      "5": "連招",
+      "6": "騷擾",
+      "7": "清線",
+      "8": "清野",
+      "9": "尾兵",
+      "10": "逃跑",
+      "11": "額外設定",
+      "12": "攻擊其他物件(眼、寵物等)",
+      "13": "在清線模式攻擊英雄",
+      "14": "緊貼目標(僅限於刺客)",
+      "15": "將你的網路延遲加入計算",
+      "16": "讓你儘量看起來像人類",
+      "17": "快速風箏",
+      "18": "靜止半徑",
+      "19": "每次移動間隔",
+      "20": "額外施法時間",
+      "21": "提示：如果你的普攻是越來越取消了太多，你可以通過添加更多額外施法時間修復.",
+      "22": "雜項設置",
+      "23": "尾兵先於騷擾",
+      "24": "控線先於推線",
+      "25": "額外農兵延遲",
+      "26": "天賦設定",
+      "27": "(雙面刃)",
+      "28": "刺客 (狡詐)",
+      "29": "野蠻 (狡詐",
+      "30": "殘忍 (狡詐)",
+      "31": "物品設定",
+      "32": "對無法擊殺的士兵使用海神之斧/狂怒九頭蛇",
+      "33": "普攻範圍",
+      "34": "敵人普攻範圍",
+      "35": "靜止半徑",
+      "36": "可尾刀士兵",
+      "37": "在士兵上顯示傷害",
+      "38": "走砍控制",
+      "39": "關閉普攻",
+      "40": "關閉跟隨滑鼠",
+      "41": "遊戲內更新事件獲取方法",
+      "42": "使用Game.OnTick (更多FPS)",
+      "43": "使用Game.OnUpdate (反應更快)"
     }
   },
   "Prediction": {
@@ -357,6 +435,16 @@
       "5": "Kesişme(Collision)",
       "6": "Ekstra Kaçış Menzili(Extra Hitbox Radius)",
       "7": "Kesişmeyi hesaplarken objelere alan ekle"
+    },
+    "Chinese": {
+      "0": "預判",
+      "1": "預判選擇:",
+      "2": "通用",
+      "3": "指向技能範圍比例 {0}%",
+      "4": "調整指向技能範圍.",
+      "5": "碰撞",
+      "6": "額外命中格半徑",
+      "7": "在計算時增加目標的命中格."
     }
   },
   "MasterMind": {
@@ -603,6 +691,13 @@
       "56": "Yanıltmayı şu kadar sürede göster {0} Saniye",
       "57": "Not: Bu arada takımın son yerlerini ve attıkları totemleri gösterebiliyorum",
       "58": "Ben eğer tuzak ve ward yerinde durmuyorsa daireyi göstermem örnek caitin tuzağına biri düşerse daireyi kapatırım çünkü tuzak kalmaz."
+    },
+    "Chinese": {
+      "0": "神意識",
+      "1": "冷卻時間跟踪器",
+      "2": "飾品跟踪器",
+      "3": "小地圖顯示",
+      "4": "效用"
     }
   },
   "AimBot": {
