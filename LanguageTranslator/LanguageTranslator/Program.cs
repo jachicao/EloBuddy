@@ -135,7 +135,7 @@ namespace LanguageTranslator
                 return;
             }
             File.WriteAllText(_jsonPath, args.Result);
-            var jsonConvert = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<Language, Dictionary<int, string>>>>(File.ReadAllText(_jsonPath));
+            var jsonConvert = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<Language, Dictionary<int, string>>>>(args.Result);
             if (jsonConvert != null)
             {
                 Translations = jsonConvert;
