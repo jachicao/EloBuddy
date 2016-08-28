@@ -99,6 +99,26 @@
       "15": "更低的數值代表點擊更快.",
       "16": "最小延遲 (默認 150)",
       "17": "最大延遲 (默認 350)"
+    },
+    "Română": {
+      "0": "Core",
+      "1": "Hacks",
+      "2": "Mod pentru streaming",
+      "3": "Ticks Pe Secundă",
+      "4": "         Valoare recomandată: 25.",
+      "5": "Notă: Ticks pe secundă reprezintă cât de des este acţionat evenimentul Game.OnTick.",
+      "6": "Asta înseamnă că opţiunea nu este un humanizer, doar o opţiune pentru performanţă.",
+      "7": "Exemplu: 25 t/s înseamnă Game.OnTick este acţionat de 25 de ori pe secundă.",
+      "8": "Valorile mai mari reprezintă o sarcină mai mare în fiecare secundă, ceea ce poate reduce FPS-ul puţin.",
+      "9": "Porneşte chat-ul în joc",
+      "10": "Porneşte Anti AFK",
+      "11": "Porneşte Movement Hack",
+      "12": "Desenează Raza Turnurilor",
+      "13": "Desenează Watermark-ul EloBuddy",
+      "14": "Întârzierea clickurilor",
+      "15": "Cu cât valoarea este mai mică, cu atât va face clickuri mai repede.",
+      "16": "Întârzierea minimă (Implicit 150)",
+      "17": "Întârzierea maximă (Implicit 350)"
     }
   },
   "Target Selector": {
