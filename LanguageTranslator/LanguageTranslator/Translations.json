@@ -358,7 +358,10 @@
 			"40": "Disable moving to mouse",
 			"41": "Update event listening",
 			"42": "Use Game.OnTick (more fps)",
-			"43": "Update Game.OnUpdate (faster reaction)"
+			"43": "Update Game.OnUpdate (faster reaction)",
+			"44": "Support Mode",
+			"45": "Don't attack Yasuo's WindWall"
+
 		},
 		"French": {
 			"0": "Orbwalker",
@@ -542,7 +545,9 @@
 			"40": "關閉跟隨滑鼠",
 			"41": "遊戲內更新事件獲取方法",
 			"42": "使用Game.OnTick (更多FPS)",
-			"43": "使用Game.OnUpdate (反應更快)"
+			"43": "使用Game.OnUpdate (反應更快)",
+			"44": "Support 模式",
+			"45": "不要攻擊犽宿風牆"
 		},
 		"Vietnamese": {
 			"0": "Orbwalker",
