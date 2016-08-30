@@ -82,9 +82,10 @@ namespace LanguageTranslator
                             {
                                 Translations = jsonConvert;
                             }
-                            var webClient = new WebClient { Encoding = Encoding.UTF8 };
-                            webClient.DownloadStringCompleted += VersionCompleted;
-                            webClient.DownloadStringAsync(new Uri(VersionUrl, UriKind.Absolute));
+                            DownloadNewJson();
+                            //var webClient = new WebClient { Encoding = Encoding.UTF8 };
+                            //webClient.DownloadStringCompleted += VersionCompleted;
+                            //webClient.DownloadStringAsync(new Uri(VersionUrl, UriKind.Absolute));
                         }
                     }
                     if (_ready)
