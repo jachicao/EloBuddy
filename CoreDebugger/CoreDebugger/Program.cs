@@ -220,7 +220,7 @@ namespace CoreDebugger
                             DrawText(target,
                                 "IsActive : " + buff.IsActive + ", IsValid: " + buff.IsValid + ", HasBuff: " + target.HasBuff(buff.DisplayName) + ", Type: " + buff.Type + ", Name: " + buff.Name +
                                 ", DisplayName: " + buff.DisplayName + ", Count: " +
-                                buff.Count + ", GetBuffCount: " + target.GetBuffCount(target) + (!string.IsNullOrEmpty(buff.SourceName) ? ", SourceName: " + buff.SourceName : "") + ", Caster: " + buff.Caster.Name +
+                                buff.Count + ", GetBuffCount: " + target.GetBuffCount(buff.name) + (!string.IsNullOrEmpty(buff.SourceName) ? ", SourceName: " + buff.SourceName : "") + ", Caster: " + buff.Caster.Name +
                                 (buff.Caster is Obj_AI_Base ? ", CasterBaseSkinName: " + ((Obj_AI_Base)buff.Caster).BaseSkinName : "") + ", RemainingTime: " +
                                 stringEndTime);
                         }
