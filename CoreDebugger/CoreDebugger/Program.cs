@@ -218,7 +218,7 @@ namespace CoreDebugger
                             var endTime = Math.Max(0, buff.EndTime - Game.Time);
                             var stringEndTime = endTime > 1000 ? "Infinite" : Convert.ToString(endTime, CultureInfo.InvariantCulture);
                             DrawText(target,
-                                "MemoryAddress : " + buff.MemoryAddress.ToString("x8") + "IsActive : " + buff.IsActive + ", IsValid: " + buff.IsValid + ", HasBuff: " + target.HasBuff(buff.DisplayName) + ", Type: " + buff.Type + ", Name: " + buff.Name +
+                                "MemoryAddress : " + buff.MemoryAddress.ToString("x8") + ", IsActive : " + buff.IsActive + ", IsValid: " + buff.IsValid + ", HasBuff: " + target.HasBuff(buff.DisplayName) + ", Type: " + buff.Type + ", Name: " + buff.Name +
                                 ", DisplayName: " + buff.DisplayName + ", Count: " +
                                 buff.Count + ", GetBuffCount: " + target.GetBuffCount(buff.Name) + (!string.IsNullOrEmpty(buff.SourceName) ? ", SourceName: " + buff.SourceName : "") + ", Caster: " + buff.Caster.Name +
                                 (buff.Caster is Obj_AI_Base ? ", CasterBaseSkinName: " + ((Obj_AI_Base)buff.Caster).BaseSkinName : "") + ", RemainingTime: " +
