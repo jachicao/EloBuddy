@@ -8,6 +8,8 @@ using EloBuddy.SDK.Events;
 using EloBuddy.SDK.Menu;
 using EloBuddy.SDK.Menu.Values;
 using SharpDX;
+using Color = System.Drawing.Color;
+
 namespace CoreDebugger
 {
     internal static class CoreDebugger
@@ -19,9 +21,9 @@ namespace CoreDebugger
         {
             get { return _myMenu["EntityManager"].Cast<CheckBox>().CurrentValue; }
         }
-        private static bool MyDamageStats
+        private static bool DamageStats
         {
-            get { return _myMenu["MyDamageStats"].Cast<CheckBox>().CurrentValue; }
+            get { return _myMenu["DamageStats"].Cast<CheckBox>().CurrentValue; }
         }
         private static bool IsValidTarget
         {
@@ -30,10 +32,6 @@ namespace CoreDebugger
         private static bool BuffInstance
         {
             get { return _myMenu["BuffInstance"].Cast<CheckBox>().CurrentValue; }
-        }
-        private static bool TargetDamageStats
-        {
-            get { return _myMenu["TargetDamageStats"].Cast<CheckBox>().CurrentValue; }
         }
         private static bool StreamingMode
         {
@@ -74,8 +72,7 @@ namespace CoreDebugger
         {
             _myMenu = MainMenu.AddMenu("CoreDebugger", "CoreDebugger");
             _myMenu.AddGroupLabel("General");
-            _myMenu.Add("MyDamageStats", new CheckBox("My damage stats", false)).OnValueChange += OnOnValueChange;
-            _myMenu.Add("TargetDamageStats", new CheckBox("Target damage stats", false)).OnValueChange += OnOnValueChange;
+            _myMenu.Add("DamageStats", new CheckBox("Damage stats", false)).OnValueChange += OnOnValueChange;
             _myMenu.Add("EntityManager", new CheckBox("EntityManager properties", false)).OnValueChange += OnOnValueChange;
             _myMenu.Add("HealthPrediction", new CheckBox("HealthPrediction properties", false)).OnValueChange += OnOnValueChange;
             _myMenu.Add("IsValidTarget", new CheckBox("IsValidTarget properties", false)).OnValueChange += OnOnValueChange;
@@ -93,7 +90,7 @@ namespace CoreDebugger
                 value.CurrentValue = false;
             }
             var autoAttacking = false;
-            AttackableUnit.OnDamage += delegate (AttackableUnit sender, AttackableUnitDamageEventArgs args)
+            AttackableUnit.OnDamage += delegate(AttackableUnit sender, AttackableUnitDamageEventArgs args)
             {
                 if (args.Source.IsMe)
                 {
@@ -111,14 +108,14 @@ namespace CoreDebugger
                     }
                 }
             };
-            Obj_AI_Base.OnBasicAttack += delegate (Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
+            Obj_AI_Base.OnBasicAttack += delegate(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
             {
                 if (sender.IsMe)
                 {
                     autoAttacking = true;
                 }
             };
-            Player.OnPostIssueOrder += delegate (Obj_AI_Base sender, PlayerIssueOrderEventArgs args)
+            Player.OnPostIssueOrder += delegate(Obj_AI_Base sender, PlayerIssueOrderEventArgs args)
             {
                 if (sender.IsMe)
                 {
@@ -131,14 +128,31 @@ namespace CoreDebugger
             Drawing.OnEndScene += delegate
             {
                 Counters.Clear();
-                if (MyDamageStats)
+                if (DamageStats)
                 {
-                    DrawText(Player.Instance,
-                        "TotalAttackDamage: " + Player.Instance.TotalAttackDamage + ", PercentArmorPenetrationMod: " + Player.Instance.PercentArmorPenetrationMod + ", FlatArmorPenetrationMod: " +
-                        Player.Instance.FlatArmorPenetrationMod + ", PercentBonusArmorPenetrationMod: " + Player.Instance.PercentBonusArmorPenetrationMod);
-                    DrawText(Player.Instance,
-                        "TotalMagicalDamage: " + Player.Instance.TotalMagicalDamage + ", PercentMagicPenetrationMod: " + Player.Instance.PercentMagicPenetrationMod + ", FlatMagicPenetrationMod: " +
-                        Player.Instance.FlatMagicPenetrationMod);
+                    foreach (var target in ObjectManager.Get<Obj_AI_Base>().Where(i => i.IsValidTarget() && i.VisibleOnScreen))
+                    {
+                        var heroTarget = target as AIHeroClient;
+                        DrawText(target, "Source");
+                        DrawText(target, "TotalAttackDamage: " + target.TotalAttackDamage + ", TotalMagicalDamage: " + target.TotalMagicalDamage);
+                        if (heroTarget != null)
+                        {
+                            DrawText(heroTarget,
+                                "PercentArmorPenetrationMod: " + heroTarget.PercentArmorPenetrationMod + ", FlatArmorPenetrationMod: " +
+                                heroTarget.FlatArmorPenetrationMod + ", PercentBonusArmorPenetrationMod: " + heroTarget.PercentBonusArmorPenetrationMod);
+                            DrawText(heroTarget,
+                                "PercentMagicPenetrationMod: " + heroTarget.PercentMagicPenetrationMod + ", FlatMagicPenetrationMod: " +
+                                heroTarget.FlatMagicPenetrationMod);
+                        }
+                        DrawText(target, "Target");
+                        DrawText(target, "Armor: " + target.Armor + ", SpellBlock: " + target.SpellBlock + ", BaseArmor: " + target.CharData.Armor);
+                        if (heroTarget != null)
+                        {
+                            DrawText(heroTarget, "FlatPhysicalReduction: " + heroTarget.FlatPhysicalReduction + ", PercentPhysicalReduction: " + heroTarget.PercentPhysicalReduction);
+                            DrawText(heroTarget, "FlatMagicReduction: " + heroTarget.FlatMagicReduction + ", PercentMagicReduction: " + heroTarget.PercentMagicReduction);
+                        }
+                    }
+                    DrawText(Player.Instance, "From");
                     DrawText(Player.Instance, "Crit: " + Player.Instance.Crit + ", FlatCritChanceMod: " + Player.Instance.FlatCritChanceMod);
                 }
                 if (CheckOrbwalker)
@@ -202,13 +216,6 @@ namespace CoreDebugger
                     }
                     DrawText(Player.Instance, "Ping: " + Game.Ping);
                 }
-                if (TargetDamageStats)
-                {
-                    foreach (var target in ObjectManager.Get<Obj_AI_Base>().Where(i => i.IsValid && i.VisibleOnScreen))
-                    {
-                        DrawText(target, "Armor: " + target.Armor + ", SpellBlock: " + target.SpellBlock + ", BaseArmor: " + target.CharData.Armor);
-                    }
-                }
                 if (BuffInstance)
                 {
                     foreach (var target in ObjectManager.Get<Obj_AI_Base>().Where(i => i.IsValid))
@@ -218,10 +225,11 @@ namespace CoreDebugger
                             var endTime = Math.Max(0, buff.EndTime - Game.Time);
                             var stringEndTime = endTime > 1000 ? "Infinite" : Convert.ToString(endTime, CultureInfo.InvariantCulture);
                             DrawText(target,
-                                "MemoryAddress : " + buff.MemoryAddress.ToString("x8") + ", IsActive : " + buff.IsActive + ", IsValid: " + buff.IsValid + ", HasBuff: " + target.HasBuff(buff.DisplayName) + ", Type: " + buff.Type + ", Name: " + buff.Name +
+                                "IsActive: " + buff.IsActive + ", IsValid: " + buff.IsValid + ", HasBuff: " + target.HasBuff(buff.DisplayName) + ", Type: " + buff.Type + ", Name: " + buff.Name +
                                 ", DisplayName: " + buff.DisplayName + ", Count: " +
-                                buff.Count + ", GetBuffCount: " + target.GetBuffCount(buff.Name) + (!string.IsNullOrEmpty(buff.SourceName) ? ", SourceName: " + buff.SourceName : "") + ", Caster: " + buff.Caster.Name +
-                                (buff.Caster is Obj_AI_Base ? ", CasterBaseSkinName: " + ((Obj_AI_Base)buff.Caster).BaseSkinName : "") + ", RemainingTime: " +
+                                buff.Count + ", GetBuffCount: " + target.GetBuffCount(buff.Name) + (!string.IsNullOrEmpty(buff.SourceName) ? ", SourceName: " + buff.SourceName : "") + ", Caster: " +
+                                buff.Caster.Name +
+                                (buff.Caster is Obj_AI_Base ? ", CasterBaseSkinName: " + ((Obj_AI_Base) buff.Caster).BaseSkinName : "") + ", RemainingTime: " +
                                 stringEndTime);
                         }
                     }
@@ -249,7 +257,10 @@ namespace CoreDebugger
                         {
                             if (spell != null && !spell.Name.Contains("Unknown") && !spell.Name.Contains("BaseSpell"))
                             {
-                                DrawText(target, "Name: " + spell.Name + ", Slot: " + spell.Slot + ", State: " + spell.State + ", ToggleState: " + spell.ToggleState + ", Level: " + spell.Level + ", Cooldown: " + spell.Cooldown + ", CooldownExpires: " + Math.Max(0f, spell.CooldownExpires - Game.Time) + ", Ammo: " + spell.Ammo + ", CastRange: " + spell.SData.CastRange + ", CastRangeDisplayOverride: " + spell.SData.CastRangeDisplayOverride);
+                                DrawText(target,
+                                    "Name: " + spell.Name + ", Slot: " + spell.Slot + ", State: " + spell.State + ", ToggleState: " + spell.ToggleState + ", Level: " + spell.Level + ", Cooldown: " +
+                                    spell.Cooldown + ", CooldownExpires: " + Math.Max(0f, spell.CooldownExpires - Game.Time) + ", Ammo: " + spell.Ammo + ", CastRange: " + spell.SData.CastRange +
+                                    ", CastRangeDisplayOverride: " + spell.SData.CastRangeDisplayOverride);
                             }
                         }
                     }
@@ -263,7 +274,7 @@ namespace CoreDebugger
                         var caster = missile.SpellCaster;
                         if (caster != null)
                         {
-                            DrawText(missile, "SpellCaster: " +caster.BaseSkinName);
+                            DrawText(missile, "SpellCaster: " + caster.BaseSkinName);
                         }
                         var target = missile.Target as Obj_AI_Base;
                         var targetIsValid = target != null;
@@ -287,7 +298,6 @@ namespace CoreDebugger
                                 DrawText(missile, "LineWidth: " + missile.SData.LineWidth);
                             }
                         }
-
                     }
                 }
             };
@@ -318,7 +328,7 @@ namespace CoreDebugger
                 Counters[target.NetworkId]++;
             }
             var targetPosition = new Vector2(0, 30 + Counters[target.NetworkId] * 18) + target.Position.WorldToScreen();
-            Drawing.DrawText(targetPosition, System.Drawing.Color.AliceBlue, text, 10);
+            Drawing.DrawText(targetPosition, Color.AliceBlue, text, 10);
         }
     }
 }
