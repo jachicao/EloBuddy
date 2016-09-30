@@ -135,6 +135,7 @@ namespace CoreDebugger
                         var heroTarget = target as AIHeroClient;
                         DrawText(target, "Source");
                         DrawText(target, "TotalAttackDamage: " + target.TotalAttackDamage + ", TotalMagicalDamage: " + target.TotalMagicalDamage);
+                        DrawText(Player.Instance, "Crit: " + Player.Instance.Crit + ", FlatCritChanceMod: " + Player.Instance.FlatCritChanceMod);
                         if (heroTarget != null)
                         {
                             DrawText(heroTarget,
@@ -152,8 +153,6 @@ namespace CoreDebugger
                             DrawText(heroTarget, "FlatMagicReduction: " + heroTarget.FlatMagicReduction + ", PercentMagicReduction: " + heroTarget.PercentMagicReduction);
                         }
                     }
-                    DrawText(Player.Instance, "From");
-                    DrawText(Player.Instance, "Crit: " + Player.Instance.Crit + ", FlatCritChanceMod: " + Player.Instance.FlatCritChanceMod);
                 }
                 if (CheckOrbwalker)
                 {
