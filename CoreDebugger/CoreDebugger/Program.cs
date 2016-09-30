@@ -135,9 +135,9 @@ namespace CoreDebugger
                         var heroTarget = target as AIHeroClient;
                         DrawText(target, "Source");
                         DrawText(target, "TotalAttackDamage: " + target.TotalAttackDamage + ", TotalMagicalDamage: " + target.TotalMagicalDamage);
-                        DrawText(Player.Instance, "Crit: " + Player.Instance.Crit + ", FlatCritChanceMod: " + Player.Instance.FlatCritChanceMod);
                         if (heroTarget != null)
                         {
+                            DrawText(heroTarget, "Crit: " + heroTarget.Crit + ", FlatCritChanceMod: " + heroTarget.FlatCritChanceMod);
                             DrawText(heroTarget,
                                 "PercentArmorPenetrationMod: " + heroTarget.PercentArmorPenetrationMod + ", FlatArmorPenetrationMod: " +
                                 heroTarget.FlatArmorPenetrationMod + ", PercentBonusArmorPenetrationMod: " + heroTarget.PercentBonusArmorPenetrationMod);
