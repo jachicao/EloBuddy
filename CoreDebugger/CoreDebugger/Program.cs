@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using EloBuddy;
 using EloBuddy.SDK;
@@ -15,6 +14,7 @@ namespace CoreDebugger
     internal static class CoreDebugger
     {
         private static Menu _myMenu;
+        private static Menu _subMenu;
         private static readonly Dictionary<int, int> Counters = new Dictionary<int, int>();
 
         private static bool EntityManager
@@ -63,6 +63,11 @@ namespace CoreDebugger
             get { return _myMenu["Orbwalker"].Cast<CheckBox>().CurrentValue; }
         }
 
+        private static bool EnableConsole
+        {
+            get { return _subMenu["Console"].Cast<CheckBox>().CurrentValue; }
+        }
+
         private static void Main()
         {
             Loading.OnLoadingComplete += delegate { Initialize(); };
@@ -71,6 +76,8 @@ namespace CoreDebugger
         private static void Initialize()
         {
             _myMenu = MainMenu.AddMenu("CoreDebugger", "CoreDebugger");
+            _subMenu = _myMenu.AddSubMenu("Console Debugger");
+            _subMenu.Add("Console", new CheckBox("Enable Console", false));
             _myMenu.AddGroupLabel("General");
             _myMenu.Add("DamageStats", new CheckBox("Damage stats", false)).OnValueChange += OnOnValueChange;
             _myMenu.Add("EntityManager", new CheckBox("EntityManager properties", false)).OnValueChange += OnOnValueChange;
@@ -128,6 +135,29 @@ namespace CoreDebugger
             Drawing.OnEndScene += delegate
             {
                 Counters.Clear();
+                if (BuffInstance)
+                {
+                    foreach (var target in ObjectManager.Get<Obj_AI_Base>().Where(i => i.IsValidTarget() && i.VisibleOnScreen))
+                    {
+                        foreach (var buff in target.Buffs)
+                        {
+                            var sum = "";
+                            sum += GetValue("IsActive", () => buff.IsActive);
+                            sum += GetValue("IsValid", () => buff.IsValid);
+                            sum += GetValue("HasBuff", () => target.HasBuff(buff.DisplayName));
+                            sum += GetValue("Type", () => buff.Type.ToString());
+                            sum += GetValue("Name", () => buff.Name);
+                            sum += GetValue("DisplayName", () => buff.DisplayName);
+                            sum += GetValue("Count", () => buff.Count);
+                            sum += GetValue("GetBuffCount", () => target.GetBuffCount(buff.Name));
+                            sum += GetValue("SourceName", () => buff.SourceName);
+                            sum += GetValue("Caster", () => buff.Caster.Name);
+                            sum += GetValue("CasterBaseSkinName", () => buff.Caster is Obj_AI_Base ? ((Obj_AI_Base)buff.Caster).BaseSkinName : "");
+                            sum += GetValue("RemainingTime", () => buff.EndTime - Game.Time);
+                            DrawText(target, sum);
+                        }
+                    }
+                }
                 if (DamageStats)
                 {
                     foreach (var target in ObjectManager.Get<Obj_AI_Base>().Where(i => i.IsValidTarget() && i.VisibleOnScreen))
@@ -156,25 +186,27 @@ namespace CoreDebugger
                 }
                 if (CheckOrbwalker)
                 {
-                    DrawText(Player.Instance, "CanAttack: " + Player.Instance.CanAttack);
-                    DrawText(Player.Instance, "IsChanneling: " + Player.Instance.Spellbook.IsChanneling);
-                    DrawText(Player.Instance, "IsAutoAttacking: " + Player.Instance.Spellbook.IsAutoAttacking);
-                    DrawText(Player.Instance, "CastEndTime: " + Player.Instance.Spellbook.CastEndTime);
-                    DrawText(Player.Instance, "GetAutoAttackRange: " + Player.Instance.GetAutoAttackRange());
-                    DrawText(Player.Instance, "CanAutoAttack: " + Orbwalker.CanAutoAttack);
-                    DrawText(Player.Instance, "CanMove: " + Orbwalker.CanMove);
+                    DrawText(Player.Instance, GetValue("CanAttack", () => Player.Instance.CanAttack));
+                    DrawText(Player.Instance, GetValue("IsChanneling", () => Player.Instance.Spellbook.IsChanneling));
+                    DrawText(Player.Instance, GetValue("IsAutoAttacking", () => Player.Instance.Spellbook.IsAutoAttacking));
+                    DrawText(Player.Instance, GetValue("CanAttack", () => Player.Instance.CanAttack));
+                    DrawText(Player.Instance, GetValue("IsChanneling", () => Player.Instance.Spellbook.IsChanneling));
+                    DrawText(Player.Instance, GetValue("CastEndTime", () => Player.Instance.Spellbook.CastEndTime));
+                    DrawText(Player.Instance, GetValue("GetAutoAttackRange", () => Player.Instance.GetAutoAttackRange()));
+                    DrawText(Player.Instance, GetValue("CanAutoAttack", () => Orbwalker.CanAutoAttack));
+                    DrawText(Player.Instance, GetValue("CanMove", () => Orbwalker.CanMove));
                 }
                 if (IsValidTarget)
                 {
                     var targets = ObjectManager.Get<Obj_AI_Base>().Where(i => i.IsValid && i.VisibleOnScreen);
                     foreach (var target in targets)
                     {
-                        DrawText(target, "IsValidTarget: " + target.IsValidTarget());
-                        DrawText(target, "IsDead: " + target.IsDead);
-                        DrawText(target, "IsVisible: " + target.IsVisible);
-                        DrawText(target, "IsTargetable: " + target.IsTargetable);
-                        DrawText(target, "IsInvulnerable: " + target.IsInvulnerable);
-                        DrawText(target, "IsHPBarRendered: " + target.IsHPBarRendered);
+                        DrawText(target, GetValue("IsValidTarget", () => target.IsValidTarget()));
+                        DrawText(target, GetValue("IsDead", () => target.IsDead));
+                        DrawText(target, GetValue("IsVisible", () => target.IsVisible));
+                        DrawText(target, GetValue("IsTargetable", () => target.IsTargetable));
+                        DrawText(target, GetValue("IsInvulnerable", () => target.IsInvulnerable));
+                        DrawText(target, GetValue("IsHPBarRendered", () => target.IsHPBarRendered));
                     }
                 }
                 if (EntityManager)
@@ -182,17 +214,18 @@ namespace CoreDebugger
                     var targets = ObjectManager.Get<Obj_AI_Base>().Where(i => i.IsValidTarget() && i.VisibleOnScreen);
                     foreach (var target in targets)
                     {
-                        DrawText(target, "Type: " + target.Type);
-                        DrawText(target, "BaseSkinName: " + target.BaseSkinName);
-                        DrawText(target, "Team: " + target.Team);
-                        DrawText(target, "IsEnemy: " + target.IsEnemy);
-                        DrawText(target, "TotalShieldHealth: " + target.TotalShieldHealth());
-                        DrawText(target, "HPRegenRate: " + target.HPRegenRate);
-                        DrawText(target, "MaxHealth: " + target.MaxHealth);
+                        DrawText(target, GetValue("NetworkId", () => target.NetworkId));
+                        DrawText(target, GetValue("Type", () => target.Type.ToString()));
+                        DrawText(target, GetValue("BaseSkinName", () => target.BaseSkinName));
+                        DrawText(target, GetValue("Team", () => target.Team.ToString()));
+                        DrawText(target, GetValue("IsEnemy", () => target.IsEnemy));
+                        DrawText(target, GetValue("TotalShieldHealth", () => target.TotalShieldHealth()));
+                        DrawText(target, GetValue("HPRegenRate", () => target.HPRegenRate));
+                        DrawText(target, GetValue("MaxHealth", () => target.MaxHealth));
                         if (target is Obj_AI_Minion)
                         {
-                            DrawText(target, "IsMinion: " + target.IsMinion);
-                            DrawText(target, "IsMonster: " + target.IsMonster);
+                            DrawText(target, GetValue("IsMinion", () => target.IsMinion));
+                            DrawText(target, GetValue("IsMonster", () => target.IsMonster));
                         }
                     }
                 }
@@ -201,50 +234,32 @@ namespace CoreDebugger
                     var targets = ObjectManager.Get<Obj_AI_Base>().Where(i => i.IsValidTarget() && i.IsAlly && i.VisibleOnScreen && (i is Obj_AI_Minion || i is Obj_AI_Turret));
                     foreach (var target in targets)
                     {
-                        DrawText(target, "IsRanged: " + target.IsRanged);
-                        DrawText(target, "Health: " + target.Health);
-                        DrawText(target, "TotalAttackDamage: " + target.TotalAttackDamage);
-                        DrawText(target, "AttackCastDelay: " + target.AttackCastDelay);
-                        DrawText(target, "AttackDelay: " + target.AttackDelay);
-                        DrawText(target, "MissileSpeed: " + target.BasicAttack.MissileSpeed);
+                        DrawText(target, GetValue("IsRanged", () => target.IsRanged));
+                        DrawText(target, GetValue("Health", () => target.Health));
+                        DrawText(target, GetValue("TotalAttackDamage", () => target.TotalAttackDamage));
+                        DrawText(target, GetValue("AttackCastDelay", () => target.AttackCastDelay));
+                        DrawText(target, GetValue("AttackDelay", () => target.AttackDelay));
+                        DrawText(target, GetValue("MissileSpeed", () => target.BasicAttack.MissileSpeed));
                         if (target is Obj_AI_Minion)
                         {
-                            DrawText(target, "PercentDamageToBarracksMinionMod: " + target.PercentDamageToBarracksMinionMod);
-                            DrawText(target, "FlatDamageReductionFromBarracksMinionMod: " + target.FlatDamageReductionFromBarracksMinionMod);
+                            DrawText(target, GetValue("PercentDamageToBarracksMinionMod", () => target.PercentDamageToBarracksMinionMod));
+                            DrawText(target, GetValue("FlatDamageReductionFromBarracksMinionMod", () => target.FlatDamageReductionFromBarracksMinionMod));
                         }
                     }
                     DrawText(Player.Instance, "Ping: " + Game.Ping);
-                }
-                if (BuffInstance)
-                {
-                    foreach (var target in ObjectManager.Get<Obj_AI_Base>().Where(i => i.IsValid))
-                    {
-                        foreach (var buff in target.Buffs)
-                        {
-                            var endTime = Math.Max(0, buff.EndTime - Game.Time);
-                            var stringEndTime = endTime > 1000 ? "Infinite" : Convert.ToString(endTime, CultureInfo.InvariantCulture);
-                            DrawText(target,
-                                "IsActive: " + buff.IsActive + ", IsValid: " + buff.IsValid + ", HasBuff: " + target.HasBuff(buff.DisplayName) + ", Type: " + buff.Type + ", Name: " + buff.Name +
-                                ", DisplayName: " + buff.DisplayName + ", Count: " +
-                                buff.Count + ", GetBuffCount: " + target.GetBuffCount(buff.Name) + (!string.IsNullOrEmpty(buff.SourceName) ? ", SourceName: " + buff.SourceName : "") + ", Caster: " +
-                                buff.Caster.Name +
-                                (buff.Caster is Obj_AI_Base ? ", CasterBaseSkinName: " + ((Obj_AI_Base) buff.Caster).BaseSkinName : "") + ", RemainingTime: " +
-                                stringEndTime);
-                        }
-                    }
                 }
                 if (CheckPrediction)
                 {
                     var targets = ObjectManager.Get<Obj_AI_Base>().Where(i => i.IsValidTarget() && i.VisibleOnScreen);
                     foreach (var target in targets)
                     {
-                        DrawText(target, "IsMoving: " + target.IsMoving);
-                        DrawText(target, "PathLength: " + target.Path.Length);
-                        DrawText(target, "BoundingRadius: " + target.BoundingRadius);
-                        DrawText(target, "MovementBlockedDebuffDuration: " + Math.Max(0f, target.GetMovementBlockedDebuffDuration()));
-                        DrawText(target, "CastEndTimeLeft: " + Math.Max(0f, target.Spellbook.CastEndTime - Game.Time));
-                        DrawText(target, "CastTimeLeft: " + Math.Max(0f, target.Spellbook.CastTime - Game.Time));
-                        DrawText(target, "IsChanneling: " + target.Spellbook.IsChanneling);
+                        DrawText(target, GetValue("IsMoving", () => target.IsMoving));
+                        DrawText(target, GetValue("PathLength", () => target.Path.Length));
+                        DrawText(target, GetValue("BoundingRadius", () => target.BoundingRadius));
+                        DrawText(target, GetValue("MovementBlockedDebuffDuration", () => Math.Max(0f, target.GetMovementBlockedDebuffDuration())));
+                        DrawText(target, GetValue("CastEndTimeLeft", () => Math.Max(0f, target.Spellbook.CastEndTime - Game.Time)));
+                        DrawText(target, GetValue("CastTimeLeft", () => Math.Max(0f, target.Spellbook.CastTime - Game.Time)));
+                        DrawText(target, GetValue("IsChanneling", () => target.Spellbook.IsChanneling));
                     }
                 }
                 if (CheckSpellbook)
@@ -269,34 +284,23 @@ namespace CoreDebugger
                     var missiles = ObjectManager.Get<MissileClient>().Where(i => i.IsValid && !i.IsDead);
                     foreach (var missile in missiles)
                     {
-                        DrawText(missile, "Slot: " + missile.Slot);
-                        var caster = missile.SpellCaster;
-                        if (caster != null)
+                        DrawText(missile, GetValue("Slot", () => missile.Slot.ToString()));
+                        DrawText(missile, GetValue("SpellCaster", delegate
                         {
-                            DrawText(missile, "SpellCaster: " + caster.BaseSkinName);
-                        }
-                        var target = missile.Target as Obj_AI_Base;
-                        var targetIsValid = target != null;
-                        if (targetIsValid)
+                            var caster = missile.SpellCaster;
+                            return caster != null ? caster.BaseSkinName : "";
+                        }));
+                        DrawText(missile, GetValue("Target", delegate
                         {
-                            DrawText(missile, "Target: " + target.BaseSkinName);
-                        }
-                        DrawText(missile, "Name: " + missile.SData.Name);
-                        DrawText(missile, "StartPosition: " + missile.StartPosition);
-                        DrawText(missile, "EndPosition: " + missile.EndPosition);
-                        var missileTravelFixed = missile.SData.MissileFixedTravelTime;
-                        if (missileTravelFixed > 0)
-                        {
-                            DrawText(missile, "MissileFixedTravelTime: " + missile.SData.MissileFixedTravelTime);
-                        }
-                        else
-                        {
-                            DrawText(missile, "MissileSpeed: " + missile.SData.MissileSpeed);
-                            if (missile.SData.LineWidth > 0)
-                            {
-                                DrawText(missile, "LineWidth: " + missile.SData.LineWidth);
-                            }
-                        }
+                            var target = missile.Target as Obj_AI_Base;
+                            return target != null ? target.BaseSkinName : "";
+                        }));
+                        DrawText(missile, GetValue("Name", () => missile.SData.Name));
+                        DrawText(missile, GetValue("StartPosition", () => missile.StartPosition));
+                        DrawText(missile, GetValue("EndPosition", () => missile.EndPosition));
+                        DrawText(missile, GetValue("MissileFixedTravelTime", () => missile.SData.MissileFixedTravelTime));
+                        DrawText(missile, GetValue("MissileSpeed", () => missile.SData.MissileSpeed));
+                        DrawText(missile, GetValue("LineWidth", () => missile.SData.LineWidth));
                     }
                 }
             };
@@ -316,7 +320,56 @@ namespace CoreDebugger
             }
         }
 
-        private static void DrawText(GameObject target, string text)
+        private static string GetValue(string name, Func<string> parameterFunc)
+        {
+            if (EnableConsole)
+            {
+                Console.WriteLine("Checking " + name);
+            }
+            var parameter = parameterFunc();
+            return name + ": " + parameter + ", ";
+        }
+        private static string GetValue(string name, Func<bool> parameterFunc)
+        {
+            if (EnableConsole)
+            {
+                Console.WriteLine("Checking " + name);
+            }
+            var parameter = parameterFunc();
+            return name + ": " + parameter + ", ";
+        }
+        private static string GetValue(string name, Func<int> parameterFunc)
+        {
+            if (EnableConsole)
+            {
+                Console.WriteLine("Checking " + name);
+            }
+            var parameter = parameterFunc();
+            return name + ": " + parameter + ", ";
+        }
+
+        private static string GetValue(string name, Func<float> parameterFunc)
+        {
+            if (EnableConsole)
+            {
+                Console.WriteLine("Checking " + name);
+            }
+            var parameter = parameterFunc();
+            return name + ": " + parameter + ", ";
+        }
+
+
+        private static string GetValue(string name, Func<Vector3> parameterFunc)
+        {
+            if (EnableConsole)
+            {
+                Console.WriteLine("Checking " + name);
+            }
+            var parameter = parameterFunc();
+            return name + ": " + parameter + ", ";
+        }
+
+        private static void DrawText(GameObject target, string value)
         {
             if (!Counters.ContainsKey(target.NetworkId))
             {
@@ -327,7 +380,7 @@ namespace CoreDebugger
                 Counters[target.NetworkId]++;
             }
             var targetPosition = new Vector2(0, 30 + Counters[target.NetworkId] * 18) + target.Position.WorldToScreen();
-            Drawing.DrawText(targetPosition, Color.AliceBlue, text, 10);
+            Drawing.DrawText(targetPosition, Color.AliceBlue, value, 10);
         }
     }
 }
