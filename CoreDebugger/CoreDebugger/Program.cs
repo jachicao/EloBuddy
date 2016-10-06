@@ -63,6 +63,11 @@ namespace CoreDebugger
             get { return _myMenu["Orbwalker"].Cast<CheckBox>().CurrentValue; }
         }
 
+        private static bool CheckItems
+        {
+            get { return _myMenu["Items"].Cast<CheckBox>().CurrentValue; }
+        }
+
         private static bool EnableConsole
         {
             get { return _subMenu["Console"].Cast<CheckBox>().CurrentValue; }
@@ -89,6 +94,7 @@ namespace CoreDebugger
             _myMenu.Add("Spellbook", new CheckBox("Spellbook", false)).OnValueChange += OnOnValueChange;
             _myMenu.Add("MissileClient", new CheckBox("MissileClient", false)).OnValueChange += OnOnValueChange;
             _myMenu.Add("Orbwalker", new CheckBox("Orbwalker", false)).OnValueChange += OnOnValueChange;
+            _myMenu.Add("Items", new CheckBox("Items", false)).OnValueChange += OnOnValueChange;
             _myMenu["StreamingMode"].Cast<CheckBox>().CurrentValue = false;
             _myMenu.AddGroupLabel("AutoAttack");
             _myMenu.Add("autoAttackDamage", new CheckBox("Print autoattack damage")).OnValueChange += OnOnValueChange;
@@ -154,6 +160,20 @@ namespace CoreDebugger
                             sum += GetValue("Caster", () => buff.Caster.Name);
                             sum += GetValue("CasterBaseSkinName", () => buff.Caster is Obj_AI_Base ? ((Obj_AI_Base)buff.Caster).BaseSkinName : "");
                             sum += GetValue("RemainingTime", () => buff.EndTime - Game.Time);
+                            DrawText(target, sum);
+                        }
+                    }
+                }
+                if (CheckItems)
+                {
+                    foreach (var target in ObjectManager.Get<AIHeroClient>().Where(i => i.IsValidTarget() && i.VisibleOnScreen))
+                    {
+                        foreach (var item in target.InventoryItems)
+                        {
+                            var sum = "";
+                            sum += GetValue("Id", () => item.Id.ToString());
+                            sum += GetValue("Name", () => item.Name);
+                            sum += GetValue("DisplayName", () => item.DisplayName);
                             DrawText(target, sum);
                         }
                     }
