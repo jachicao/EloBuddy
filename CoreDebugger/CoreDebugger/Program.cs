@@ -206,14 +206,16 @@ namespace CoreDebugger
                 }
                 if (CheckOrbwalker)
                 {
+                    DrawText(Player.Instance, GetValue("AttackCastDelay", () => Player.Instance.AttackCastDelay));
+                    DrawText(Player.Instance, GetValue("LastAutoAttack", () => Orbwalker.LastAutoAttack));
                     DrawText(Player.Instance, GetValue("CanAttack", () => Player.Instance.CanAttack));
+                    DrawText(Player.Instance, GetValue("CanMove", () => Player.Instance.CanMove));
                     DrawText(Player.Instance, GetValue("IsChanneling", () => Player.Instance.Spellbook.IsChanneling));
                     DrawText(Player.Instance, GetValue("IsAutoAttacking", () => Player.Instance.Spellbook.IsAutoAttacking));
                     DrawText(Player.Instance, GetValue("CanAttack", () => Player.Instance.CanAttack));
                     DrawText(Player.Instance, GetValue("IsChanneling", () => Player.Instance.Spellbook.IsChanneling));
                     DrawText(Player.Instance, GetValue("CastEndTime", () => Player.Instance.Spellbook.CastEndTime));
                     DrawText(Player.Instance, GetValue("AnimationTimeLeft", () => Math.Max(0, Player.Instance.Spellbook.CastEndTime - Game.Time)));
-                    DrawText(Player.Instance, GetValue("AttackCastDelay", () => Player.Instance.AttackCastDelay));
                     DrawText(Player.Instance, GetValue("GetAutoAttackRange", () => Player.Instance.GetAutoAttackRange()));
                     DrawText(Player.Instance, GetValue("CanAutoAttack", () => Orbwalker.CanAutoAttack));
                     DrawText(Player.Instance, GetValue("CanMove", () => Orbwalker.CanMove));
