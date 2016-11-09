@@ -19,7 +19,7 @@ namespace LeeSin
             new Item(ItemId.Trackers_Knife, WardRange), new Item(ItemId.Trackers_Knife_Enchantment_Cinderhulk, WardRange), new Item(ItemId.Trackers_Knife_Enchantment_Runic_Echoes, WardRange), new Item(ItemId.Trackers_Knife_Enchantment_Warrior, WardRange),
             new Item(ItemId.Warding_Totem_Trinket, WardRange),
             new Item(ItemId.Greater_Stealth_Totem_Trinket, WardRange), new Item(ItemId.Explorers_Ward, WardRange),
-            new Item(ItemId.Greater_Vision_Totem_Trinket, WardRange), new Item(ItemId.Vision_Ward, WardRange),
+            new Item(ItemId.Greater_Vision_Totem_Trinket, WardRange), new Item(ItemId.Control_Ward, WardRange),
         };
 
         private static List<Obj_AI_Minion> _wardsAvailable;

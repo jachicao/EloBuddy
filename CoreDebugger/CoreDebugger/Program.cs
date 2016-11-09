@@ -240,6 +240,7 @@ namespace CoreDebugger
                     {
                         DrawText(target, GetValue("NetworkId", () => target.NetworkId));
                         DrawText(target, GetValue("Type", () => target.Type.ToString()));
+                        DrawText(target, GetValue("Name", () => target.Name));
                         DrawText(target, GetValue("BaseSkinName", () => target.BaseSkinName));
                         DrawText(target, GetValue("Team", () => target.Team.ToString()));
                         DrawText(target, GetValue("IsEnemy", () => target.IsEnemy));
