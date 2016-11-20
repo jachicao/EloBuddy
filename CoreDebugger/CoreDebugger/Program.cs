@@ -16,6 +16,7 @@ namespace CoreDebugger
         private static Menu _myMenu;
         private static Menu _subMenu;
         private static readonly Dictionary<int, int> Counters = new Dictionary<int, int>();
+        private static readonly Dictionary<int, List<string>> Animations = new Dictionary<int, List<string>>();
 
         private static bool EntityManager
         {
@@ -73,9 +74,36 @@ namespace CoreDebugger
             get { return _subMenu["Console"].Cast<CheckBox>().CurrentValue; }
         }
 
+        private static bool OnPlayAnimation
+        {
+            get { return _myMenu["OnPlayAnimation"].Cast<CheckBox>().CurrentValue; }
+        }
+
         private static void Main()
         {
             Loading.OnLoadingComplete += delegate { Initialize(); };
+        }
+
+        public static bool IsVisibleTarget(this AttackableUnit target, bool checkForDead = true)
+        {
+            if (target == null || !target.IsValid || !target.IsVisible || !target.VisibleOnScreen)
+            {
+                return false;
+            }
+            if (checkForDead)
+            {
+                if (target.IsDead)
+                {
+                    return false;
+                }
+            }
+            /*
+            var baseObject = target as Obj_AI_Base;
+            if (baseObject != null && !baseObject.IsHPBarRendered)
+            {
+                return false;
+            }*/
+            return true;
         }
 
         private static void Initialize()
@@ -95,6 +123,7 @@ namespace CoreDebugger
             _myMenu.Add("MissileClient", new CheckBox("MissileClient", false)).OnValueChange += OnOnValueChange;
             _myMenu.Add("Orbwalker", new CheckBox("Orbwalker", false)).OnValueChange += OnOnValueChange;
             _myMenu.Add("Items", new CheckBox("Items", false)).OnValueChange += OnOnValueChange;
+            _myMenu.Add("OnPlayAnimation", new CheckBox("OnPlayAnimation", false)).OnValueChange += OnOnValueChange;
             _myMenu["StreamingMode"].Cast<CheckBox>().CurrentValue = false;
             _myMenu.AddGroupLabel("AutoAttack");
             _myMenu.Add("autoAttackDamage", new CheckBox("Print autoattack damage")).OnValueChange += OnOnValueChange;
@@ -121,6 +150,18 @@ namespace CoreDebugger
                     }
                 }
             };
+            Obj_AI_Base.OnPlayAnimation += delegate(Obj_AI_Base sender, GameObjectPlayAnimationEventArgs args)
+            {
+                if (!Animations.ContainsKey(sender.NetworkId))
+                {
+                    Animations.Add(sender.NetworkId, new List<string>());
+                }
+                Animations[sender.NetworkId].Add(args.Animation + " - " + args.AnimationHash.ToString("x8") + " - " + Game.Time);
+            };
+            GameObject.OnDelete += delegate(GameObject sender, EventArgs args)
+            {
+                Animations.Remove(sender.NetworkId);
+            };
             Obj_AI_Base.OnBasicAttack += delegate(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
             {
                 if (sender.IsMe)
@@ -143,7 +184,7 @@ namespace CoreDebugger
                 Counters.Clear();
                 if (BuffInstance)
                 {
-                    foreach (var target in ObjectManager.Get<Obj_AI_Base>().Where(i => i.IsValidTarget() && i.VisibleOnScreen))
+                    foreach (var target in ObjectManager.Get<Obj_AI_Base>().Where(i => i.IsVisibleTarget()))
                     {
                         foreach (var buff in target.Buffs)
                         {
@@ -166,7 +207,7 @@ namespace CoreDebugger
                 }
                 if (CheckItems)
                 {
-                    foreach (var target in ObjectManager.Get<AIHeroClient>().Where(i => i.IsValidTarget() && i.VisibleOnScreen))
+                    foreach (var target in ObjectManager.Get<AIHeroClient>().Where(i => i.IsVisibleTarget()))
                     {
                         foreach (var item in target.InventoryItems)
                         {
@@ -180,7 +221,7 @@ namespace CoreDebugger
                 }
                 if (DamageStats)
                 {
-                    foreach (var target in ObjectManager.Get<Obj_AI_Base>().Where(i => i.IsValidTarget() && i.VisibleOnScreen))
+                    foreach (var target in ObjectManager.Get<Obj_AI_Base>().Where(i => i.IsVisibleTarget()))
                     {
                         var heroTarget = target as AIHeroClient;
                         DrawText(target, "Source");
@@ -220,6 +261,26 @@ namespace CoreDebugger
                     DrawText(Player.Instance, GetValue("CanAutoAttack", () => Orbwalker.CanAutoAttack));
                     DrawText(Player.Instance, GetValue("CanMove", () => Orbwalker.CanMove));
                 }
+                if (OnPlayAnimation)
+                {
+                    var targets = ObjectManager.Get<Obj_AI_Base>().Where(i => i.IsVisibleTarget(false));
+                    foreach (var target in targets)
+                    {
+                        if (Animations.ContainsKey(target.NetworkId))
+                        {
+                            var counter = 0;
+                            foreach (var animation in Enumerable.Reverse(Animations[target.NetworkId]))
+                            {
+                                if (counter > 15)
+                                {
+                                    break;
+                                }
+                                DrawText(target, GetValue("", () => animation));
+                                counter++;
+                            }
+                        }
+                    }
+                }
                 if (IsValidTarget)
                 {
                     var targets = ObjectManager.Get<Obj_AI_Base>().Where(i => i.IsValid && i.VisibleOnScreen);
@@ -235,7 +296,7 @@ namespace CoreDebugger
                 }
                 if (EntityManager)
                 {
-                    var targets = ObjectManager.Get<Obj_AI_Base>().Where(i => i.IsValidTarget() && i.VisibleOnScreen);
+                    var targets = ObjectManager.Get<Obj_AI_Base>().Where(i => i.IsVisibleTarget());
                     foreach (var target in targets)
                     {
                         DrawText(target, GetValue("NetworkId", () => target.NetworkId));
@@ -256,7 +317,7 @@ namespace CoreDebugger
                 }
                 if (HealthPrediction)
                 {
-                    var targets = ObjectManager.Get<Obj_AI_Base>().Where(i => i.IsValidTarget() && i.IsAlly && i.VisibleOnScreen && (i is Obj_AI_Minion || i is Obj_AI_Turret || i.IsMe));
+                    var targets = ObjectManager.Get<Obj_AI_Base>().Where(i => i.IsVisibleTarget() && i.IsAlly && (i is Obj_AI_Minion || i is Obj_AI_Turret || i.IsMe));
                     foreach (var target in targets)
                     {
                         DrawText(target, GetValue("IsRanged", () => target.IsRanged));
@@ -275,7 +336,7 @@ namespace CoreDebugger
                 }
                 if (CheckPrediction)
                 {
-                    var targets = ObjectManager.Get<Obj_AI_Base>().Where(i => i.IsValidTarget() && i.VisibleOnScreen);
+                    var targets = ObjectManager.Get<Obj_AI_Base>().Where(i => i.IsVisibleTarget());
                     foreach (var target in targets)
                     {
                         DrawText(target, GetValue("IsMoving", () => target.IsMoving));
@@ -289,7 +350,7 @@ namespace CoreDebugger
                 }
                 if (CheckSpellbook)
                 {
-                    var targets = ObjectManager.Get<Obj_AI_Base>().Where(i => i.IsValidTarget() && i.VisibleOnScreen);
+                    var targets = ObjectManager.Get<Obj_AI_Base>().Where(i => i.IsVisibleTarget());
                     foreach (var target in targets)
                     {
                         foreach (var spell in target.Spellbook.Spells)
@@ -320,6 +381,12 @@ namespace CoreDebugger
                             var target = missile.Target as Obj_AI_Base;
                             return target != null ? target.BaseSkinName : "";
                         }));
+                        var heroCaster = missile.SpellCaster as AIHeroClient;
+                        if (heroCaster != null)
+                        {
+                            EloBuddy.SDK.Rendering.Circle.Draw(SharpDX.Color.Blue, 65f, 1f, missile.StartPosition);
+                            EloBuddy.SDK.Rendering.Circle.Draw(SharpDX.Color.Blue, 65f, 1f, missile.EndPosition);
+                        }
                         DrawText(missile, GetValue("Name", () => missile.SData.Name));
                         DrawText(missile, GetValue("StartPosition", () => missile.StartPosition));
                         DrawText(missile, GetValue("EndPosition", () => missile.EndPosition));
