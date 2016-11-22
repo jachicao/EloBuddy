@@ -79,6 +79,11 @@ namespace CoreDebugger
             get { return _myMenu["OnPlayAnimation"].Cast<CheckBox>().CurrentValue; }
         }
 
+        private static bool OnProcessSpell
+        {
+            get { return _myMenu["OnProcessSpell"].Cast<CheckBox>().CurrentValue; }
+        }
+
         private static void Main()
         {
             Loading.OnLoadingComplete += delegate { Initialize(); };
@@ -124,6 +129,7 @@ namespace CoreDebugger
             _myMenu.Add("Orbwalker", new CheckBox("Orbwalker", false)).OnValueChange += OnOnValueChange;
             _myMenu.Add("Items", new CheckBox("Items", false)).OnValueChange += OnOnValueChange;
             _myMenu.Add("OnPlayAnimation", new CheckBox("OnPlayAnimation", false)).OnValueChange += OnOnValueChange;
+            _myMenu.Add("OnProcessSpell", new CheckBox("OnProcessSpell", false)).OnValueChange += OnOnValueChange;
             _myMenu["StreamingMode"].Cast<CheckBox>().CurrentValue = false;
             _myMenu.AddGroupLabel("AutoAttack");
             _myMenu.Add("autoAttackDamage", new CheckBox("Print autoattack damage")).OnValueChange += OnOnValueChange;
@@ -176,6 +182,28 @@ namespace CoreDebugger
                     if (StreamingMode)
                     {
                         Hud.ShowClick(args.Target != null ? ClickType.Attack : ClickType.Move, args.TargetPosition);
+                    }
+                }
+            };
+            Obj_AI_Base.OnProcessSpellCast += delegate(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
+            {
+                if (OnProcessSpell)
+                {
+                    if (sender.IsMe)
+                    {
+                        Chat.Print("\n OnProcessSpell");
+                        PrintOnProcessSpell(sender, args);
+                    }
+                }
+            };
+            Obj_AI_Base.OnBasicAttack += delegate(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
+            {
+                if (OnProcessSpell)
+                {
+                    if (sender.IsMe)
+                    {
+                        Chat.Print("\n OnBasicAttack");
+                        PrintOnProcessSpell(sender, args);
                     }
                 }
             };
@@ -396,6 +424,35 @@ namespace CoreDebugger
                     }
                 }
             };
+        }
+
+        private static void PrintOnProcessSpell(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
+        {
+            if (args.SData != null)
+            {
+                try
+                {
+                    var str =   "Sender: " + sender.BaseSkinName
+                                + ", Name: " + args.SData.Name
+                                + ", Slot: " + args.Slot
+                                + ", LineWidth: " + args.SData.LineWidth
+                                + (args.SData.CastRadius > 0 ? ", CastRadius: " + args.SData.CastRadius : "")
+                                + (args.SData.CastRadiusSecondary > 0 ? ", CastRadiusSecondary: " + args.SData.CastRadiusSecondary : "")
+                                + ", CastConeAngle: " + args.SData.CastConeAngle
+                                + (args.SData.CastRange > 0 ? ", CastRange: " + args.SData.CastRange : "")
+                                + (args.SData.CastRangeDisplayOverride > 0 ? ", CastRangeDisplayOverride: " + args.SData.CastRangeDisplayOverride : "")
+                                + ", MissileSpeed: " + args.SData.MissileSpeed
+                                + ", CastConeDistance: " + args.SData.CastConeDistance
+                                + ", CastTime: " + args.SData.CastTime
+                                + (args.Target != null ? ", Target: " + args.Target.Name : "");
+                    Chat.Print(str);
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
+            }
         }
 
         private static void OnOnValueChange(ValueBase<bool> sender, ValueBase<bool>.ValueChangeArgs args)
